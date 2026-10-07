@@ -24,16 +24,74 @@ header { text-align: center; padding: 10px 0 5px 0; }
 header h1 { font-size: 1.4rem; font-weight: 600; color: #fff; }
 header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
 
-.settings-toggle { background: #2a2a2a; border: 1px solid #444; color: #fff; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; text-align: center; }
-.settings-panel { display: none; background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); flex-direction: column; gap: 10px; }
+.settings-toggle {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-align: center;
+}
+.settings-panel {
+    display: none;
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    flex-direction: column;
+    gap: 10px;
+}
 .settings-panel.open { display: flex; }
 .settings-panel h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
 .input-group { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .input-group label { width: 30px; font-weight: bold; color: var(--text-muted); font-size: 0.8rem; }
-.input-group input { flex: 1; background: #2a2a2a; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 6px; font-size: 0.9rem; }
-.input-group .remove-btn { background: #ef4444; color: #fff; border: none; width: 30px; height: 30px; border-radius: 6px; font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0; flex-shrink: 0; }
-.add-btn { background: #333; border: 1px dashed #555; color: #fff; width: 100%; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-top: 5px; }
-.danger-btn { background: #7f1d1d; color: #fecaca; border: 1px solid #991b1b; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-top: 15px; }
+.input-group input {
+    flex: 1;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+.input-group .remove-btn {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+}
+.add-btn {
+    background: #333;
+    border: 1px dashed #555;
+    color: #fff;
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+.danger-btn {
+    background: #7f1d1d;
+    color: #fecaca;
+    border: 1px solid #991b1b;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 15px;
+}
 
 .date-control { background: var(--card-bg); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border-color); }
 .date-row { display: flex; gap: 10px; align-items: center; }
@@ -62,7 +120,14 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 .post-card.manipulator .worker-badge { border-color: var(--accent-orange); color: #fde68a; }
 .worker-badge.empty { color: #666; border-style: dashed; }
 
-.dayoff-banner { background: linear-gradient(135deg, #2d1b4e, #1e1e1e); border: 1px solid #6d5aa8; border-radius: 12px; padding: 25px 15px; text-align: center; color: #e0d4ff; }
+.dayoff-banner {
+    background: linear-gradient(135deg, #2d1b4e, #1e1e1e);
+    border: 1px solid #6d5aa8;
+    border-radius: 12px;
+    padding: 25px 15px;
+    text-align: center;
+    color: #e0d4ff;
+}
 .dayoff-banner .emoji { font-size: 2.5rem; display: block; margin-bottom: 8px; }
 .dayoff-banner .title { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
 .dayoff-banner .sub { font-size: 0.8rem; color: #a99cd4; margin-top: 6px; }
@@ -88,51 +153,220 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 .calendar-day .vodokanal-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); margin-top: 2px; }
 .calendar-day .dayoff-mark { font-size: 0.6rem; color: #a99cd4; line-height: 1; }
 
-.stats-section { background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); }
-.stats-section h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; }
-.stats-period-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
-.stats-tab { flex: 1; background: #2a2a2a; border: 1px solid #444; color: var(--text-muted); padding: 6px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; text-align: center; font-weight: 600; }
-.stats-tab.active { background: #1e293b; border-color: var(--accent-blue); color: #fff; }
-.stats-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
-.stats-summary-card { background: #252525; border: 1px solid #333; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 2px; }
-.stats-summary-card .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-.stats-summary-card .value { font-size: 1.15rem; font-weight: 700; color: #fff; line-height: 1.1; }
-.stats-summary-card .sub { font-size: 0.7rem; color: var(--text-muted); }
+/* ===== СТАТИСТИКА ===== */
+.stats-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+.stats-section h3 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.stats-period-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+.stats-tab {
+    flex: 1;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: var(--text-muted);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+}
+.stats-tab.active {
+    background: #1e293b;
+    border-color: var(--accent-blue);
+    color: #fff;
+}
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.stats-summary-card {
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.stats-summary-card .label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.stats-summary-card .value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+}
+.stats-summary-card .sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
 .stats-summary-card.good .value { color: #34d399; }
 .stats-summary-card.warn .value { color: #fbbf24; }
 .stats-summary-card.bad .value { color: #f87171; }
-.stats-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; font-size: 0.7rem; color: var(--text-muted); }
-.stats-legend span { display: inline-flex; align-items: center; gap: 4px; }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.stats-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+.stats-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
 .stats-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-.stats-table th { text-align: left; color: var(--text-muted); font-weight: 600; padding: 6px 4px; border-bottom: 1px solid var(--border-color); font-size: 0.65rem; text-transform: uppercase; }
+.stats-table th {
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+}
 .stats-table th.num, .stats-table td.num { text-align: center; }
-.stats-table td { padding: 8px 4px; border-bottom: 1px solid #2a2a2a; vertical-align: middle; }
+.stats-table td {
+    padding: 8px 4px;
+    border-bottom: 1px solid #2a2a2a;
+    vertical-align: middle;
+}
 .stats-table tr:last-child td { border-bottom: none; }
 .stats-table td.num b { color: #fff; font-weight: 700; }
-.stats-name-cell { display: flex; align-items: center; gap: 8px; }
-.stat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.15); }
+.stats-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.stat-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.15);
+}
 .stat-bar-cell { width: 90px; }
-.stat-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #1a1a1a; }
+.stat-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #1a1a1a;
+}
 .stat-bar-seg { height: 100%; }
 .stat-bar-seg.a { background: var(--accent-green); }
 .stat-bar-seg.b { background: var(--accent-blue); }
 .stat-bar-seg.c { background: var(--accent-orange); }
-.stats-total-row td { border-top: 2px solid var(--border-color); border-bottom: none; font-weight: 700; color: #fff; padding-top: 10px; }
+.stats-total-row td {
+    border-top: 2px solid var(--border-color);
+    border-bottom: none;
+    font-weight: 700;
+    color: #fff;
+    padding-top: 10px;
+}
 .stats-total-row .stats-name-cell { color: #fff; }
 .stats-total-row td.num { color: #fff; }
-.stats-balance { margin-top: 12px; padding: 10px 12px; border-radius: 8px; font-size: 0.78rem; line-height: 1.5; background: #252525; border: 1px solid #333; }
-.stats-balance.good { background: #052e1f; border-color: #065f46; color: #a7f3d0; }
-.stats-balance.warn { background: #2a1f0a; border-color: #92400e; color: #fde68a; }
-.stats-balance .balance-title { font-weight: 700; margin-bottom: 4px; display: block; }
-.stats-footer { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 0.72rem; color: var(--text-muted); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.stats-empty { color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px 0; }
-.copy-btn { background: #2a2a2a; border: 1px solid #444; color: #fff; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-top: 10px; font-weight: 600; }
+.stats-balance {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    background: #252525;
+    border: 1px solid #333;
+}
+.stats-balance.good {
+    background: #052e1f;
+    border-color: #065f46;
+    color: #a7f3d0;
+}
+.stats-balance.warn {
+    background: #2a1f0a;
+    border-color: #92400e;
+    color: #fde68a;
+}
+.stats-balance .balance-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: block;
+}
+.stats-balance ul {
+    margin: 4px 0 0 0;
+    padding-left: 18px;
+}
+.stats-balance li { margin-bottom: 2px; }
+.stats-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.stats-empty {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 15px 0;
+}
+.copy-btn {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    font-weight: 600;
+}
 .copy-btn:active { background: #333; }
-.copy-btn.generate { background: var(--accent-green); border-color: var(--accent-green); color: #000; }
+.copy-btn.generate {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+    color: #000;
+}
 .copy-btn.generate:active { background: #0e9c6e; }
 
-.vk-link { display: inline-block; margin-top: 6px; color: #0077FF; text-decoration: none; font-weight: 600; font-size: 0.78rem; word-break: break-all; }
+.vk-link {
+    display: inline-block;
+    margin-top: 6px;
+    color: #0077FF;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.78rem;
+    word-break: break-all;
+}
 .vk-link:hover { text-decoration: underline; }
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
@@ -152,20 +386,6 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 .modal-buttons .cancel { background: #444; }
 .modal-buttons .save { background: var(--accent-green); color: #000; }
 
-.setup-screen { background: var(--card-bg); border-radius: 16px; padding: 25px 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 18px; }
-.setup-screen h2 { font-size: 1.3rem; font-weight: 700; color: #fff; text-align: center; margin-bottom: 5px; }
-.setup-screen .subtitle { font-size: 0.85rem; color: var(--text-muted); text-align: center; line-height: 1.4; margin-bottom: 5px; }
-.setup-screen .today-date { font-size: 1rem; color: var(--accent-blue); text-align: center; font-weight: 600; padding: 8px; background: #1e293b; border-radius: 8px; margin-bottom: 5px; }
-.setup-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-.setup-list { display: flex; flex-direction: column; gap: 8px; }
-.setup-worker-btn { background: #2a2a2a; border: 2px solid #444; color: #fff; padding: 14px 18px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s, border-color 0.15s; }
-.setup-worker-btn:hover { background: #333; }
-.setup-worker-btn.selected { background: #1e3a5f; border-color: var(--accent-blue); color: #fff; }
-.setup-worker-btn.selected::after { content: '✓'; color: var(--accent-blue); font-size: 1.2rem; font-weight: 700; }
-.setup-confirm { background: var(--accent-green); color: #000; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; border: none; margin-top: 8px; }
-.setup-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
-.setup-note { font-size: 0.75rem; color: var(--text-muted); text-align: center; line-height: 1.4; }
-
 .footer-info { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; padding-bottom: 20px; }
 </style>
 </head>
@@ -176,86 +396,72 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
         <p id="subtitle">Бригада (Старт, Водоканал, Манипулятор)</p>
     </header>
 
-    <div id="setupScreen" class="setup-screen hidden">
-        <h2>👋 Первый запуск</h2>
-        <p class="subtitle">Расставь людей один раз — программа сама просчитает все смены вперёд по циклу.</p>
-        <div class="today-date" id="setupTodayDate">Сегодня</div>
-        <div>
-            <div class="setup-label">Кто сегодня на Водоканале?</div>
-            <div class="setup-list" id="setupWorkerList"></div>
-        </div>
-        <button class="setup-confirm" id="setupConfirmBtn" disabled>✅ Готово, расставить всех</button>
-        <p class="setup-note">Остальных программа расставит на Старт и Манипулятор автоматически,<br>и продолжит цикл на все последующие рабочие дни.</p>
+    <button class="settings-toggle" id="toggleSettings">⚙️ Настроить сотрудников</button>
+    <div class="settings-panel" id="settingsPanel">
+        <h3>Сотрудники</h3>
+        <div id="nameInputs"></div>
+        <button class="add-btn" id="addWorkerBtn">+ Добавить сотрудника</button>
+        <button id="saveNamesBtn" style="background: var(--accent-green); color: #000; margin-top: 5px;">💾 Сохранить изменения</button>
+        <button class="danger-btn" id="resetAllBtn">🗑️ Сбросить всё</button>
     </div>
 
-    <div id="mainInterface" class="hidden">
-        <button class="settings-toggle" id="toggleSettings">⚙️ Настроить сотрудников</button>
-        <div class="settings-panel" id="settingsPanel">
-            <h3>Сотрудники</h3>
-            <div id="nameInputs"></div>
-            <button class="add-btn" id="addWorkerBtn">+ Добавить сотрудника</button>
-            <button id="saveNamesBtn" style="background: var(--accent-green); color: #000; margin-top: 5px;">💾 Сохранить изменения</button>
-            <button class="danger-btn" id="resetAllBtn">🗑️ Сбросить всё</button>
+    <div class="date-control">
+        <div class="date-row">
+            <input type="date" id="datePicker">
+            <button class="today-btn" id="todayBtn">Сегодня</button>
         </div>
+        <div style="font-size: 0.9rem; color: #aaa; text-align: center;" id="dayOfWeekDisplay"></div>
+        <div class="action-row">
+            <button class="edit-btn" id="editDayBtn">✏️ Изменить</button>
+            <button class="dayoff-btn" id="dayoffBtn">🌙 Выходной</button>
+        </div>
+    </div>
 
-        <div class="date-control">
-            <div class="date-row">
-                <input type="date" id="datePicker">
-                <button class="today-btn" id="todayBtn">Сегодня</button>
-            </div>
-            <div style="font-size: 0.9rem; color: #aaa; text-align: center;" id="dayOfWeekDisplay"></div>
-            <div class="action-row">
-                <button class="edit-btn" id="editDayBtn">✏️ Изменить</button>
-                <button class="dayoff-btn" id="dayoffBtn">🌙 Выходной</button>
-            </div>
-        </div>
+    <div id="dayoffBanner" class="dayoff-banner hidden">
+        <span class="emoji">🌙</span>
+        <span class="title">ВЫХОДНОЙ</span>
+        <span class="sub">Цикл смен стоит на месте. Следующий рабочий день = +1 строка.</span>
+    </div>
 
-        <div id="dayoffBanner" class="dayoff-banner hidden">
-            <span class="emoji">🌙</span>
-            <span class="title">ВЫХОДНОЙ</span>
-            <span class="sub">Цикл смен стоит на месте. Следующий рабочий день = +1 строка.</span>
+    <div id="postsBlock">
+        <div class="post-card start">
+            <div class="post-header"><span class="post-title">🟢 Пост А — Старт</span><span class="post-count" id="postACount">0 чел.</span></div>
+            <div class="workers-list" id="postA"></div>
         </div>
+        <div class="post-card vodokanal" style="margin-top: 10px;">
+            <div class="post-header"><span class="post-title">🔵 Пост Б — Водоканал</span><span class="post-count" id="postBCount">0 чел.</span></div>
+            <div class="workers-list" id="postB"></div>
+        </div>
+        <div class="post-card manipulator" style="margin-top: 10px;">
+            <div class="post-header"><span class="post-title">🟠 Пост В — Манипулятор</span><span class="post-count" id="postCCount">0 чел.</span></div>
+            <div class="workers-list" id="postC"></div>
+        </div>
+    </div>
 
-        <div id="postsBlock">
-            <div class="post-card start">
-                <div class="post-header"><span class="post-title">🟢 Пост А — Старт</span><span class="post-count" id="postACount">0 чел.</span></div>
-                <div class="workers-list" id="postA"></div>
-            </div>
-            <div class="post-card vodokanal" style="margin-top: 10px;">
-                <div class="post-header"><span class="post-title">🔵 Пост Б — Водоканал</span><span class="post-count" id="postBCount">0 чел.</span></div>
-                <div class="workers-list" id="postB"></div>
-            </div>
-            <div class="post-card manipulator" style="margin-top: 10px;">
-                <div class="post-header"><span class="post-title">🟠 Пост В — Манипулятор</span><span class="post-count" id="postCCount">0 чел.</span></div>
-                <div class="workers-list" id="postC"></div>
-            </div>
+    <div class="calendar-section">
+        <div class="calendar-header">
+            <button class="calendar-nav-btn" id="prevMonthBtn">‹</button>
+            <div class="calendar-title" id="calendarTitle"></div>
+            <button class="calendar-nav-btn" id="nextMonthBtn">›</button>
         </div>
+        <div class="weekdays">
+            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
 
-        <div class="calendar-section" style="margin-top: 15px;">
-            <div class="calendar-header">
-                <button class="calendar-nav-btn" id="prevMonthBtn">‹</button>
-                <div class="calendar-title" id="calendarTitle"></div>
-                <button class="calendar-nav-btn" id="nextMonthBtn">›</button>
-            </div>
-            <div class="weekdays">
-                <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
-            </div>
-            <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="stats-section">
+        <h3>📊 Статистика смен (только факты)</h3>
+        <div class="stats-period-tabs">
+            <div class="stats-tab active" data-period="month">Текущий месяц</div>
+            <div class="stats-tab" data-period="all">Всё время</div>
         </div>
+        <div id="statsContainer"></div>
+    </div>
 
-        <div class="stats-section" style="margin-top: 15px;">
-            <h3>📊 Статистика смен (только факты)</h3>
-            <div class="stats-period-tabs">
-                <div class="stats-tab active" data-period="month">Текущий месяц</div>
-                <div class="stats-tab" data-period="all">Всё время</div>
-            </div>
-            <div id="statsContainer"></div>
-        </div>
-
-        <div class="footer-info">
-            Данные сохраняются в вашем браузере.<br>
-            <a class="vk-link" href="https://vk.me/join/dZLTZB_LCCOhGGUjui9/4HgKiiHoMYn11JE=" target="_blank" rel="noopener">🔗 Открыть чат ВКонтакте</a>
-        </div>
+    <div class="footer-info">
+        Данные сохраняются в вашем браузере.<br>
+        <a class="vk-link" href="https://vk.me/join/dZLTZB_LCCOhGGUjui9/4HgKiiHoMYn11JE=" target="_blank" rel="noopener">🔗 Открыть чат ВКонтакте</a>
     </div>
 </div>
 
@@ -286,30 +492,34 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 
 <script>
 // --- КОНСТАНТЫ ---
-// 3 = Сеня, 5 = Тёма (поменяны местами)
-const DEFAULT_WORKERS = { '1': 'Сухроб', '2': 'Женя', '3': 'Сеня', '4': 'Макс', '5': 'Тёма' };
+const DEFAULT_WORKERS = { '1': 'Сухроб', '2': 'Женя', '3': 'Тёма', '4': 'Макс', '5': 'Сеня' };
 const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
-// ЦИКЛ — без залипаний.
+// ЦИКЛ — ровно как в таблице (5 строк).
+// Пост Б (Водоканал) по строкам: 3, 5, 2, 4, 1
 const CYCLE = [
-    [['1','2'], ['3'], ['4','5']],
-    [['3','4'], ['5'], ['1','2']],
-    [['5','1'], ['2'], ['3','4']],
-    [['2','3'], ['4'], ['5','1']],
-    [['4','5'], ['1'], ['2','3']],
+    [['1','2'], ['3'], ['4','5']],   // строка 1 (индекс 0)
+    [['3','4'], ['5'], ['1','2']],   // строка 2 (индекс 1)  ← старт 05.10.2026: Сеня
+    [['5','1'], ['2'], ['3','4']],   // строка 3 (индекс 2)  ← 06.10: Женя
+    [['2','3'], ['4'], ['5','1']],   // строка 4 (индекс 3)  ← 07.10: Макс
+    [['4','5'], ['1'], ['2','3']],   // строка 5 (индекс 4)
 ];
 
-// Карта: кто на Водоканале (id) → индекс строки
-const B_WORKER_TO_CYCLE = { '3': 0, '5': 1, '2': 2, '4': 3, '1': 4 };
+// Стартовая дата: 05.10.2026 — 2-я строка цикла (индекс 1), Водоканал = Сеня (5)
+const START_DATE = new Date(2026, 9, 5);
+const START_CYCLE_INDEX = 1;
 
-// Рабочие дни (основной график)
+// Рабочие дни (основной график, 1/2 смена) из "Подработка Деталь".
+// Подработки (extras) и мероприятия (events) сюда НЕ входят.
 const WORK_DAYS = {
+    // Сентябрь 2026
     '2026-09-02': '1', '2026-09-03': '1', '2026-09-04': '2',
     '2026-09-07': '2', '2026-09-08': '2',
     '2026-09-11': '1', '2026-09-12': '1',
     '2026-09-14': '1', '2026-09-15': '1', '2026-09-16': '2', '2026-09-17': '2',
     '2026-09-23': '1', '2026-09-24': '1', '2026-09-25': '2',
     '2026-09-28': '2', '2026-09-29': '2',
+    // Октябрь 2026
     '2026-10-02': '1', '2026-10-03': '1',
     '2026-10-05': '1', '2026-10-06': '1',
     '2026-10-07': '2', '2026-10-08': '2',
@@ -317,12 +527,14 @@ const WORK_DAYS = {
     '2026-10-19': '2', '2026-10-20': '2',
     '2026-10-23': '1', '2026-10-24': '1',
     '2026-10-26': '1', '2026-10-27': '1', '2026-10-28': '2', '2026-10-29': '2',
+    // Ноябрь 2026
     '2026-11-05': '1', '2026-11-06': '2',
     '2026-11-09': '2', '2026-11-10': '2',
     '2026-11-13': '1', '2026-11-14': '1',
     '2026-11-16': '1', '2026-11-17': '1', '2026-11-18': '2', '2026-11-19': '2',
     '2026-11-25': '1', '2026-11-26': '1', '2026-11-27': '2',
     '2026-11-30': '2',
+    // Декабрь 2026
     '2026-12-01': '2',
     '2026-12-04': '1', '2026-12-05': '1',
     '2026-12-07': '1', '2026-12-08': '1', '2026-12-09': '2', '2026-12-10': '2',
@@ -341,7 +553,6 @@ let currentCalendarDate = new Date();
 let selectedDate = new Date();
 let currentStatsPeriod = 'month';
 let WORKER_COLORS = {};
-let setupSelectedWorker = null;
 
 // --- ЦВЕТА ---
 function generateColor(index) {
@@ -392,26 +603,35 @@ function computeNextWorkerId() {
 }
 
 // ============================================================
-// ЛОГИКА ЦИКЛА
+// ГЛАВНАЯ ЛОГИКА
 // ============================================================
+function findLastWorkingDayBefore(date) {
+    const ds = getLocalDateStr(date);
+    const keys = Object.keys(ACTUAL_SCHEDULE).filter(k => k < ds).sort();
+    if (keys.length === 0) return null;
+    const lastKey = keys[keys.length - 1];
+    return { key: lastKey, data: ACTUAL_SCHEDULE[lastKey] };
+}
+
 function getCycleIndexForDate(date) {
     const ds = getLocalDateStr(date);
+
     if (ACTUAL_SCHEDULE[ds] && typeof ACTUAL_SCHEDULE[ds].cycleIndex === 'number') {
         return ACTUAL_SCHEDULE[ds].cycleIndex;
     }
-    const keys = Object.keys(ACTUAL_SCHEDULE).filter(k => k < ds).sort();
-    if (keys.length > 0) {
-        const lastKey = keys[keys.length - 1];
-        const lastIdx = ACTUAL_SCHEDULE[lastKey].cycleIndex;
-        if (typeof lastIdx === 'number') {
-            return (lastIdx + 1) % 5;
-        }
+
+    const lastWorking = findLastWorkingDayBefore(date);
+    if (lastWorking && typeof lastWorking.data.cycleIndex === 'number') {
+        return (lastWorking.data.cycleIndex + 1) % 5;
     }
-    return 0;
+
+    const diffDays = Math.round((date - START_DATE) / 86400000);
+    return ((START_CYCLE_INDEX + diffDays) % 5 + 5) % 5;
 }
 
 function getShiftForDate(date) {
     const ds = getLocalDateStr(date);
+
     if (ACTUAL_SCHEDULE[ds]) {
         return {
             A: [...ACTUAL_SCHEDULE[ds].A],
@@ -421,21 +641,27 @@ function getShiftForDate(date) {
             isDayOff: false
         };
     }
+
     if (DAYOFFS[ds]) {
         return { isDayOff: true, A: [], B: [], C: [], cycleIndex: null };
     }
+
     const idx = getCycleIndexForDate(date);
     const c = CYCLE[idx];
-    return { A: [...c[0]], B: [...c[1]], C: [...c[2]], cycleIndex: idx, isDayOff: false };
+    return {
+        A: [...c[0]],
+        B: [...c[1]],
+        C: [...c[2]],
+        cycleIndex: idx,
+        isDayOff: false
+    };
 }
 
 function isDayOff(date) {
     return !!DAYOFFS[getLocalDateStr(date)];
 }
 
-// ============================================================
-// СОХРАНЕНИЕ
-// ============================================================
+// --- СОХРАНЕНИЕ ---
 function loadData() {
     const savedWorkers = localStorage.getItem('brigade_workers');
     const savedActual = localStorage.getItem('brigade_actual_schedule');
@@ -445,8 +671,10 @@ function loadData() {
     if (!WORKERS || typeof WORKERS !== 'object' || Array.isArray(WORKERS) || Object.keys(WORKERS).length === 0) {
         WORKERS = JSON.parse(JSON.stringify(DEFAULT_WORKERS));
     }
+
     ACTUAL_SCHEDULE = safeParse(savedActual, {});
     if (typeof ACTUAL_SCHEDULE !== 'object' || Array.isArray(ACTUAL_SCHEDULE)) ACTUAL_SCHEDULE = {};
+
     DAYOFFS = safeParse(savedDayoffs, {});
     if (typeof DAYOFFS !== 'object' || Array.isArray(DAYOFFS)) DAYOFFS = {};
 
@@ -464,99 +692,46 @@ function saveData() {
     }
 }
 
-function hasAnySchedule() {
-    return Object.keys(ACTUAL_SCHEDULE).length > 0;
-}
-
 // ============================================================
-// ПЕРВЫЙ ЗАПУСК — РАССТАНОВКА
+// ПРИНУДИТЕЛЬНОЕ АВТОЗАПОЛНЕНИЕ ПО ЦИКЛУ
 // ============================================================
-function showSetupScreen() {
-    document.getElementById('setupScreen').classList.remove('hidden');
-    document.getElementById('mainInterface').classList.add('hidden');
+function forceFillSchedule() {
+    const startStr = getLocalDateStr(START_DATE);
+    const workDayKeys = Object.keys(WORK_DAYS)
+        .filter(k => k >= startStr)
+        .sort();
 
-    const today = new Date();
-    document.getElementById('setupTodayDate').textContent = formatDate(today);
+    if (workDayKeys.length === 0) return;
 
-    const list = document.getElementById('setupWorkerList');
-    list.innerHTML = '';
-    setupSelectedWorker = null;
-    document.getElementById('setupConfirmBtn').disabled = true;
-
-    const ids = Object.keys(WORKERS).sort((a, b) => parseInt(a) - parseInt(b));
-    ids.forEach(id => {
-        const btn = document.createElement('button');
-        btn.className = 'setup-worker-btn';
-        btn.textContent = WORKERS[id];
-        btn.dataset.id = id;
-        btn.addEventListener('click', () => {
-            list.querySelectorAll('.setup-worker-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            setupSelectedWorker = id;
-            document.getElementById('setupConfirmBtn').disabled = false;
-        });
-        list.appendChild(btn);
-    });
-}
-
-function applySetup() {
-    if (!setupSelectedWorker) return;
-
-    const today = new Date();
-    const todayStr = getLocalDateStr(today);
-
-    const cycleIdx = B_WORKER_TO_CYCLE[setupSelectedWorker];
-    if (cycleIdx === undefined) {
-        alert('Ошибка: этот сотрудник не встречается на Водоканале.');
-        return;
-    }
-
-    const c = CYCLE[cycleIdx];
-    ACTUAL_SCHEDULE[todayStr] = {
-        A: [...c[0]],
-        B: [...c[1]],
-        C: [...c[2]],
-        cycleIndex: cycleIdx
-    };
-
-    const startStr = todayStr;
-    const workDayKeys = Object.keys(WORK_DAYS).filter(k => k > startStr).sort();
-
-    let idx = cycleIdx;
     workDayKeys.forEach(ds => {
-        idx = (idx + 1) % 5;
-        const cc = CYCLE[idx];
-        ACTUAL_SCHEDULE[ds] = {
-            A: [...cc[0]],
-            B: [...cc[1]],
-            C: [...cc[2]],
-            cycleIndex: idx
-        };
+        delete ACTUAL_SCHEDULE[ds];
+        delete DAYOFFS[ds];
     });
 
-    const allKeys = Object.keys(WORK_DAYS).filter(k => k >= startStr).sort();
-    if (allKeys.length > 0) {
-        const firstDate = parseLocalDate(allKeys[0]);
-        const lastDate = parseLocalDate(allKeys[allKeys.length - 1]);
-        for (let d = new Date(firstDate); d <= lastDate; d.setDate(d.getDate() + 1)) {
-            const ds = getLocalDateStr(d);
-            if (!ACTUAL_SCHEDULE[ds] && !DAYOFFS[ds]) {
-                DAYOFFS[ds] = true;
-            }
+    let cycleIdx = START_CYCLE_INDEX;
+    workDayKeys.forEach(ds => {
+        const c = CYCLE[cycleIdx];
+        ACTUAL_SCHEDULE[ds] = {
+            A: [...c[0]],
+            B: [...c[1]],
+            C: [...c[2]],
+            cycleIndex: cycleIdx
+        };
+        cycleIdx = (cycleIdx + 1) % 5;
+    });
+
+    const firstKey = workDayKeys[0];
+    const lastKey = workDayKeys[workDayKeys.length - 1];
+    const firstDate = parseLocalDate(firstKey);
+    const lastDate = parseLocalDate(lastKey);
+    for (let d = new Date(firstDate); d <= lastDate; d.setDate(d.getDate() + 1)) {
+        const ds = getLocalDateStr(d);
+        if (!ACTUAL_SCHEDULE[ds] && !DAYOFFS[ds]) {
+            DAYOFFS[ds] = true;
         }
     }
 
-    Object.keys(ACTUAL_SCHEDULE).forEach(k => { if (k < todayStr) delete ACTUAL_SCHEDULE[k]; });
-    Object.keys(DAYOFFS).forEach(k => { if (k < todayStr) delete DAYOFFS[k]; });
-
     saveData();
-    document.getElementById('setupScreen').classList.add('hidden');
-    document.getElementById('mainInterface').classList.remove('hidden');
-
-    document.getElementById('subtitle').textContent = `Бригада из ${Object.keys(WORKERS).length} человек`;
-    document.getElementById('datePicker').value = todayStr;
-    currentCalendarDate = new Date(today);
-    updateUI(today);
 }
 
 // --- ОТРИСОВКА ---
@@ -643,7 +818,10 @@ function renderCalendar(selDate = null) {
 
         if (hasDayoff) {
             dayDiv.classList.add('dayoff');
-            dayDiv.innerHTML = `<span class="day-number">${day}</span><span class="dayoff-mark">🌙</span>`;
+            dayDiv.innerHTML = `
+                <span class="day-number">${day}</span>
+                <span class="dayoff-mark">🌙</span>
+            `;
         } else if (hasData) {
             const dotColor = WORKER_COLORS[vodokanalWorkerId] || '#888';
             dayDiv.innerHTML = `
@@ -722,7 +900,7 @@ function renderStats() {
     if (!container) return;
 
     const data = getStatsData(currentStatsPeriod);
-    const { result, daysConsidered, activeIds, totalShifts, totalShiftsA, totalShiftsB, totalShiftsC, spread } = data;
+    const { result, daysConsidered, activeIds, totalShifts, totalShiftsA, totalShiftsB, totalShiftsC, avg, spread } = data;
 
     if (activeIds.length === 0) {
         container.innerHTML = '<div class="stats-empty">Нет данных за выбранный период</div>';
@@ -794,7 +972,9 @@ function renderStats() {
     html += `</tbody></table>`;
 
     html += `<div class="stats-balance ${balanceClass}"><span class="balance-title">${balanceTitle}</span></div>`;
+
     html += `<div class="stats-footer"><span>Период: ${periodLabel}</span><span>Сотрудников: ${activeIds.length}</span></div>`;
+
     html += `<button class="copy-btn generate" id="generateBtn">📤 Сгенерировать на сегодня</button>`;
     html += `<button class="copy-btn" id="copyStatsBtn">📋 Скопировать отчёт</button>`;
 
@@ -825,6 +1005,7 @@ function renderStats() {
     }
 }
 
+// --- Копирование с визуальной обратной связью ---
 function copyWithFeedback(btn, text, successLabel) {
     const original = btn.textContent;
     const done = () => {
@@ -838,45 +1019,82 @@ function copyWithFeedback(btn, text, successLabel) {
     }
 }
 
+// ============================================================
+// КРАСИВЫЙ ОТЧЁТ ДЛЯ ЧАТА
+// ============================================================
 function buildStatsReport(periodLabel, daysConsidered, totalDaysInPeriod,
                           sortedIds, result, totalShifts,
                           totalShiftsA, totalShiftsB, totalShiftsC, spread) {
+
     const line = '━━━━━━━━━━━━━━━━━━━━━━';
     const nameW = Math.max(8, ...sortedIds.map(id => (WORKERS[id] || '—').length));
-    const pad = (s, n) => { s = String(s); return s.length >= n ? s : s + ' '.repeat(n - s.length); };
-    const padL = (s, n) => { s = String(s); return s.length >= n ? s : ' '.repeat(n - s.length) + s; };
+    const pad = (s, n) => {
+        s = String(s);
+        return s.length >= n ? s : s + ' '.repeat(n - s.length);
+    };
+    const padL = (s, n) => {
+        s = String(s);
+        return s.length >= n ? s : ' '.repeat(n - s.length) + s;
+    };
 
     let text = '';
-    text += `📊 СТАТИСТИКА СМЕН\n${line}\n📅 Период: ${periodLabel}\n🗓 Рабочих дней: ${daysConsidered} из ${totalDaysInPeriod}\n${line}\n\n`;
+    text += `📊 СТАТИСТИКА СМЕН\n`;
+    text += `${line}\n`;
+    text += `📅 Период: ${periodLabel}\n`;
+    text += `🗓 Рабочих дней: ${daysConsidered} из ${totalDaysInPeriod}\n`;
+    text += `${line}\n\n`;
+
     text += `👥 ПО СОТРУДНИКАМ:\n\n`;
+
     const header = `${pad('Сотрудник', nameW)}  🟢  🔵  🟠  Всего`;
-    text += header + '\n' + '─'.repeat(header.length) + '\n';
+    text += header + '\n';
+    text += '─'.repeat(header.length) + '\n';
+
     sortedIds.forEach(id => {
         const r = result[id];
-        text += `${pad(WORKERS[id] || '—', nameW)}  ${padL(r.A, 1)}   ${padL(r.B, 1)}   ${padL(r.C, 1)}   ${padL(r.total, 3)}\n`;
+        const name = WORKERS[id] || '—';
+        text += `${pad(name, nameW)}  ${padL(r.A, 1)}   ${padL(r.B, 1)}   ${padL(r.C, 1)}   ${padL(r.total, 3)}\n`;
     });
+
     text += '─'.repeat(header.length) + '\n';
-    text += `${pad('ИТОГО', nameW)}  ${padL(totalShiftsA, 1)}   ${padL(totalShiftsB, 1)}   ${padL(totalShiftsC, 1)}   ${padL(totalShifts, 3)}\n${line}\n\n`;
-    if (spread <= 1) text += `⚖️ Разброс: ${spread} — загрузка сбалансирована ✅`;
-    else if (spread <= 3) text += `⚠️ Разброс: ${spread} — небольшой перекос`;
-    else text += `⚠️ Разброс: ${spread} — заметный перекос`;
+    text += `${pad('ИТОГО', nameW)}  ${padL(totalShiftsA, 1)}   ${padL(totalShiftsB, 1)}   ${padL(totalShiftsC, 1)}   ${padL(totalShifts, 3)}\n`;
+    text += `${line}\n\n`;
+
+    if (spread <= 1) {
+        text += `⚖️ Разброс: ${spread} — загрузка сбалансирована ✅`;
+    } else if (spread <= 3) {
+        text += `⚠️ Разброс: ${spread} — небольшой перекос`;
+    } else {
+        text += `⚠️ Разброс: ${spread} — заметный перекос`;
+    }
+
     return text;
 }
 
+// --- ГЕНЕРАЦИЯ ТЕКСТА НА ДЕНЬ ---
 function buildTodayText(date) {
     const shift = getShiftForDate(date);
-    if (shift.isDayOff) return `🌙 ${formatShortDate(date)} — выходной`;
+    if (shift.isDayOff) {
+        return `🌙 ${formatShortDate(date)} — выходной`;
+    }
     const namesA = (shift.A || []).map(id => WORKERS[id] || '—').join(', ') || '—';
     const namesB = (shift.B || []).map(id => WORKERS[id] || '—').join(', ') || '—';
     const namesC = (shift.C || []).map(id => WORKERS[id] || '—').join(', ') || '—';
-    return `🔔 Смена ${formatShortDate(date)}\n\n🟢 Старт: ${namesA}\n🔵 Водоканал: ${namesB}\n🟠 Манипулятор: ${namesC}`;
+
+    let text = `🔔 Смена ${formatShortDate(date)}\n\n`;
+    text += `🟢 Старт: ${namesA}\n`;
+    text += `🔵 Водоканал: ${namesB}\n`;
+    text += `🟠 Манипулятор: ${namesC}`;
+    return text;
 }
 
 function fallbackCopy(text, callback) {
     const ta = document.createElement('textarea');
     ta.value = text;
-    ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
     try { document.execCommand('copy'); callback(); }
     catch (e) { alert('Не удалось скопировать. Текст:\n\n' + text); }
     document.body.removeChild(ta);
@@ -884,16 +1102,23 @@ function fallbackCopy(text, callback) {
 
 // --- НАСТРОЙКА ИМЁН ---
 let tempWorkers = {};
+
 function renderNameInputs() {
     const container = document.getElementById('nameInputs');
     container.innerHTML = '';
     const keys = Object.keys(tempWorkers).sort((a, b) => parseInt(a) - parseInt(b));
+
     keys.forEach(id => {
         const div = document.createElement('div');
         div.className = 'input-group';
-        div.innerHTML = `<label>${id}</label><input type="text" data-id="${id}" value="${tempWorkers[id] || ''}" placeholder="Имя"><button class="remove-btn" data-id="${id}" title="Удалить">×</button>`;
+        div.innerHTML = `
+            <label>${id}</label>
+            <input type="text" data-id="${id}" value="${tempWorkers[id] || ''}" placeholder="Имя">
+            <button class="remove-btn" data-id="${id}" title="Удалить">×</button>
+        `;
         container.appendChild(div);
     });
+
     container.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = e.target.getAttribute('data-id');
@@ -913,7 +1138,12 @@ let editingDate = null;
 function openEditModal() {
     editingDate = new Date(selectedDate);
     const shift = getShiftForDate(editingDate);
-    if (shift.isDayOff) { alert('Это выходной. Сначала отмените выходной кнопкой «↩️ Отменить выходной».'); return; }
+
+    if (shift.isDayOff) {
+        alert('Это выходной. Сначала отмените выходной кнопкой «↩️ Отменить выходной».');
+        return;
+    }
+
     document.getElementById('modalDateLabel').textContent = formatDate(editingDate);
 
     const createCheckboxes = (container, selectedIds, maxLimit, groupName) => {
@@ -928,6 +1158,7 @@ function openEditModal() {
             label.innerHTML = `<input type="checkbox" name="${groupName}" value="${id}" ${isChecked ? 'checked' : ''}><span>${WORKERS[id]}</span>`;
             container.appendChild(label);
         });
+
         container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
             cb.addEventListener('change', () => {
                 const checked = container.querySelectorAll('input:checked');
@@ -940,6 +1171,7 @@ function openEditModal() {
     createCheckboxes(modalPostA, shift.A || [], 2, 'modalA');
     createCheckboxes(modalPostB, shift.B || [], 1, 'modalB');
     createCheckboxes(modalPostC, shift.C || [], 2, 'modalC');
+
     updateAllCheckboxStates();
     modalOverlay.classList.add('open');
 }
@@ -950,18 +1182,22 @@ function updateAllCheckboxStates() {
         { el: modalPostB, max: 1 },
         { el: modalPostC, max: 2 }
     ];
+
     const selectedMap = {};
     containers.forEach(({ el }) => {
         el.querySelectorAll('input:checked').forEach(cb => { selectedMap[cb.value] = cb.name; });
     });
+
     containers.forEach(({ el, max }) => {
         const currentChecked = el.querySelectorAll('input:checked').length;
         const isFull = currentChecked >= max;
+
         el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
             const workerId = cb.value;
             const label = cb.parentElement;
             const isSelectedHere = cb.checked;
             const isSelectedElsewhere = selectedMap[workerId] && selectedMap[workerId] !== cb.name;
+
             if (isSelectedElsewhere) { cb.disabled = true; label.classList.add('disabled'); }
             else if (!isSelectedHere && isFull) { cb.disabled = true; label.classList.add('disabled'); }
             else { cb.disabled = false; label.classList.remove('disabled'); }
@@ -986,15 +1222,20 @@ function saveEditedDay() {
         return;
     }
     const unique = new Set([...newA, ...newB, ...newC]);
-    if (unique.size !== 5) { alert('Ошибка: один и тот же сотрудник не может быть на двух постах.'); return; }
+    if (unique.size !== 5) {
+        alert('Ошибка: один и тот же сотрудник не может быть на двух постах.');
+        return;
+    }
 
     const ds = getLocalDateStr(editingDate);
+
     let cycleIndex;
     if (ACTUAL_SCHEDULE[ds] && typeof ACTUAL_SCHEDULE[ds].cycleIndex === 'number') {
         cycleIndex = ACTUAL_SCHEDULE[ds].cycleIndex;
     } else {
         cycleIndex = getCycleIndexForDate(editingDate);
     }
+
     ACTUAL_SCHEDULE[ds] = { A: newA, B: newB, C: newC, cycleIndex };
     delete DAYOFFS[ds];
     saveData();
@@ -1003,6 +1244,7 @@ function saveEditedDay() {
     updateUI(dateToUpdate);
 }
 
+// --- ВЫХОДНОЙ ---
 function toggleDayOff() {
     const ds = getLocalDateStr(selectedDate);
     if (DAYOFFS[ds]) {
@@ -1017,39 +1259,41 @@ function toggleDayOff() {
 
 // --- ИНИЦИАЛИЗАЦИЯ ---
 loadData();
+forceFillSchedule();
 
-if (hasAnySchedule()) {
-    document.getElementById('mainInterface').classList.remove('hidden');
-    const today = new Date();
-    document.getElementById('datePicker').value = getLocalDateStr(today);
-    currentCalendarDate = new Date(today);
-    document.getElementById('subtitle').textContent = `Бригада из ${Object.keys(WORKERS).length} человек`;
-    updateUI(today);
-} else {
-    showSetupScreen();
-}
+const today = new Date();
+document.getElementById('datePicker').value = getLocalDateStr(today);
+currentCalendarDate = new Date(today);
+
+document.getElementById('subtitle').textContent = `Бригада из ${Object.keys(WORKERS).length} человек`;
+
+updateUI(today);
 
 // --- ОБРАБОТЧИКИ ---
-document.getElementById('setupConfirmBtn').addEventListener('click', applySetup);
-
 document.getElementById('datePicker').addEventListener('change', (e) => {
     const parsed = parseLocalDate(e.target.value);
     if (parsed) updateUI(parsed);
 });
+
 document.getElementById('todayBtn').addEventListener('click', () => {
     const now = new Date();
     document.getElementById('datePicker').value = getLocalDateStr(now);
     currentCalendarDate = new Date(now);
     updateUI(now);
 });
+
 document.getElementById('prevMonthBtn').addEventListener('click', () => {
     currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
-    renderCalendar(selectedDate); renderStats();
+    renderCalendar(selectedDate);
+    renderStats();
 });
+
 document.getElementById('nextMonthBtn').addEventListener('click', () => {
     currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
-    renderCalendar(selectedDate); renderStats();
+    renderCalendar(selectedDate);
+    renderStats();
 });
+
 document.getElementById('toggleSettings').addEventListener('click', () => {
     const panel = document.getElementById('settingsPanel');
     panel.classList.toggle('open');
@@ -1058,6 +1302,7 @@ document.getElementById('toggleSettings').addEventListener('click', () => {
         renderNameInputs();
     }
 });
+
 document.getElementById('addWorkerBtn').addEventListener('click', () => {
     while (tempWorkers[String(nextWorkerId)]) nextWorkerId++;
     const newId = String(nextWorkerId);
@@ -1065,6 +1310,7 @@ document.getElementById('addWorkerBtn').addEventListener('click', () => {
     tempWorkers[newId] = `Сотрудник ${newId}`;
     renderNameInputs();
 });
+
 document.getElementById('saveNamesBtn').addEventListener('click', () => {
     const inputs = document.querySelectorAll('#nameInputs input[type="text"]');
     const newWorkers = {};
@@ -1073,7 +1319,9 @@ document.getElementById('saveNamesBtn').addEventListener('click', () => {
         const val = input.value.trim();
         newWorkers[id] = val || `Сотрудник ${id}`;
     });
+
     if (Object.keys(newWorkers).length < 3) { alert('Слишком мало сотрудников. Нужно хотя бы 3.'); return; }
+
     WORKERS = newWorkers;
     computeNextWorkerId();
     rebuildWorkerColors();
@@ -1083,19 +1331,22 @@ document.getElementById('saveNamesBtn').addEventListener('click', () => {
     document.getElementById('settingsPanel').classList.remove('open');
     alert('Изменения сохранены!');
 });
+
 document.getElementById('resetAllBtn').addEventListener('click', () => {
-    if (confirm('Сбросить ВСЕ данные? Программа запустится заново.')) {
+    if (confirm('Сбросить ВСЕ данные (имена, смены, выходные)?')) {
         localStorage.removeItem('brigade_workers');
         localStorage.removeItem('brigade_actual_schedule');
         localStorage.removeItem('brigade_dayoffs');
         location.reload();
     }
 });
+
 document.getElementById('editDayBtn').addEventListener('click', openEditModal);
 document.getElementById('dayoffBtn').addEventListener('click', toggleDayOff);
 document.getElementById('modalCancelBtn').addEventListener('click', closeEditModal);
 document.getElementById('modalSaveBtn').addEventListener('click', saveEditedDay);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeEditModal(); });
+
 document.querySelectorAll('.stats-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
