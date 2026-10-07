@@ -388,6 +388,14 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 
 .footer-info { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; padding-bottom: 20px; }
 </style>
+    <meta name="theme-color" content="#121212">
+    <meta name="application-name" content="График смен">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="График смен">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="./icons/icon-192.png">
 </head>
 <body>
 <div class="app-container">
@@ -1355,6 +1363,15 @@ document.querySelectorAll('.stats-tab').forEach(tab => {
         renderStats();
     });
 });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+            console.warn('PWA Service Worker registration failed:', err);
+        });
+    });
+}
 </script>
 </body>
 </html>
