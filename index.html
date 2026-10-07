@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>График смен бригады</title>
+<style>
+:root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-main: #e0e0e0;
+    --text-muted: #888;
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-orange: #f59e0b;
+    --accent-red: #ef4444;
+    --border-color: #333;
+    --today-border: #fbbf24;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background-color: var(--bg-color); color: var(--text-main); padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
+.app-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
+header { text-align: center; padding: 10px 0 5px 0; }
+header h1 { font-size: 1.4rem; font-weight: 600; color: #fff; }
+header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+.settings-toggle { background: #2a2a2a; border: 1px solid #444; color: #fff; width: 100%; padding: 10px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; text-align: center; }
+.settings-panel { display: none; background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); flex-direction: column; gap: 10px; }
+.settings-panel.open { display: flex; }
+.settings-panel h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
+.input-group { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.input-group label { width: 30px; font-weight: bold; color: var(--text-muted); font-size: 0.8rem; }
+.input-group input { flex: 1; background: #2a2a2a; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 6px; font-size: 0.9rem; }
+.input-group .remove-btn { background: #ef4444; color: #fff; border: none; width: 30px; height: 30px; border-radius: 6px; font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0; flex-shrink: 0; }
+.add-btn { background: #333; border: 1px dashed #555; color: #fff; width: 100%; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-top: 5px; }
+.danger-btn { background: #7f1d1d; color: #fecaca; border: 1px solid #991b1b; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-top: 15px; }
+
+.date-control { background: var(--card-bg); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border-color); }
+.date-row { display: flex; gap: 10px; align-items: center; }
+input[type="date"] { flex: 1; background: #2a2a2a; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 8px; font-size: 1rem; outline: none; }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+button { background: var(--accent-blue); color: #fff; border: none; padding: 10px 15px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+button:active { opacity: 0.7; }
+button.today-btn { background: #333; border: 1px solid #555; }
+button.edit-btn { background: var(--accent-orange); color: #000; }
+button.dayoff-btn { background: #4a3a7a; color: #e0d4ff; border: 1px solid #6d5aa8; }
+button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #10b981; }
+.action-row { display: flex; gap: 8px; }
+.action-row button { flex: 1; }
+
+.post-card { background: var(--card-bg); border-radius: 12px; padding: 15px; border-left: 5px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; }
+.post-card.start { border-left-color: var(--accent-green); }
+.post-card.vodokanal { border-left-color: var(--accent-blue); }
+.post-card.manipulator { border-left-color: var(--accent-orange); }
+.post-header { display: flex; justify-content: space-between; align-items: center; }
+.post-title { font-size: 1rem; font-weight: 600; color: #fff; }
+.post-count { font-size: 0.75rem; background: #333; padding: 2px 8px; border-radius: 10px; color: var(--text-muted); }
+.workers-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.worker-badge { background: #2a2a2a; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 1rem; font-weight: 500; border: 1px solid #444; display: inline-block; }
+.post-card.start .worker-badge { border-color: var(--accent-green); color: #a7f3d0; }
+.post-card.vodokanal .worker-badge { border-color: var(--accent-blue); color: #bfdbfe; }
+.post-card.manipulator .worker-badge { border-color: var(--accent-orange); color: #fde68a; }
+.worker-badge.empty { color: #666; border-style: dashed; }
+
+.dayoff-banner { background: linear-gradient(135deg, #2d1b4e, #1e1e1e); border: 1px solid #6d5aa8; border-radius: 12px; padding: 25px 15px; text-align: center; color: #e0d4ff; }
+.dayoff-banner .emoji { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+.dayoff-banner .title { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
+.dayoff-banner .sub { font-size: 0.8rem; color: #a99cd4; margin-top: 6px; }
+
+.hidden { display: none !important; }
+
+.calendar-section { background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); }
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.calendar-title { font-size: 1.1rem; font-weight: 600; color: #fff; text-transform: capitalize; }
+.calendar-nav-btn { background: #2a2a2a; border: 1px solid #444; color: #fff; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; padding: 0; }
+.calendar-nav-btn:active { background: #444; }
+.weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.calendar-day { aspect-ratio: 1; background: #252525; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--text-main); cursor: pointer; border: 2px solid transparent; transition: background 0.2s, border-color 0.2s, opacity 0.2s, box-shadow 0.2s; padding: 2px; position: relative; }
+.calendar-day:hover { background: #333; }
+.calendar-day.empty { background: transparent; cursor: default; pointer-events: none; }
+.calendar-day.no-data { background: #1a1a1a; color: #555; }
+.calendar-day.dayoff { background: #1a1530; color: #7a6da8; }
+.calendar-day.today { border-color: var(--today-border); background: #2a2a1a; }
+.calendar-day.selected { border-color: var(--accent-blue); background: #1e293b; }
+.calendar-day .day-number { font-weight: 600; line-height: 1; margin-bottom: 2px; }
+.calendar-day .vodokanal-name { font-size: 0.55rem; color: #bfdbfe; line-height: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.calendar-day .vodokanal-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); margin-top: 2px; }
+.calendar-day .dayoff-mark { font-size: 0.6rem; color: #a99cd4; line-height: 1; }
+
+.stats-section { background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); }
+.stats-section h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; }
+.stats-period-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.stats-tab { flex: 1; background: #2a2a2a; border: 1px solid #444; color: var(--text-muted); padding: 6px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; text-align: center; font-weight: 600; }
+.stats-tab.active { background: #1e293b; border-color: var(--accent-blue); color: #fff; }
+.stats-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+.stats-summary-card { background: #252525; border: 1px solid #333; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 2px; }
+.stats-summary-card .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+.stats-summary-card .value { font-size: 1.15rem; font-weight: 700; color: #fff; line-height: 1.1; }
+.stats-summary-card .sub { font-size: 0.7rem; color: var(--text-muted); }
+.stats-summary-card.good .value { color: #34d399; }
+.stats-summary-card.warn .value { color: #fbbf24; }
+.stats-summary-card.bad .value { color: #f87171; }
+.stats-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; font-size: 0.7rem; color: var(--text-muted); }
+.stats-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.stats-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.stats-table th { text-align: left; color: var(--text-muted); font-weight: 600; padding: 6px 4px; border-bottom: 1px solid var(--border-color); font-size: 0.65rem; text-transform: uppercase; }
+.stats-table th.num, .stats-table td.num { text-align: center; }
+.stats-table td { padding: 8px 4px; border-bottom: 1px solid #2a2a2a; vertical-align: middle; }
+.stats-table tr:last-child td { border-bottom: none; }
+.stats-table td.num b { color: #fff; font-weight: 700; }
+.stats-name-cell { display: flex; align-items: center; gap: 8px; }
+.stat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.15); }
+.stat-bar-cell { width: 90px; }
+.stat-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #1a1a1a; }
+.stat-bar-seg { height: 100%; }
+.stat-bar-seg.a { background: var(--accent-green); }
+.stat-bar-seg.b { background: var(--accent-blue); }
+.stat-bar-seg.c { background: var(--accent-orange); }
+.stats-total-row td { border-top: 2px solid var(--border-color); border-bottom: none; font-weight: 700; color: #fff; padding-top: 10px; }
+.stats-total-row .stats-name-cell { color: #fff; }
+.stats-total-row td.num { color: #fff; }
+.stats-balance { margin-top: 12px; padding: 10px 12px; border-radius: 8px; font-size: 0.78rem; line-height: 1.5; background: #252525; border: 1px solid #333; }
+.stats-balance.good { background: #052e1f; border-color: #065f46; color: #a7f3d0; }
+.stats-balance.warn { background: #2a1f0a; border-color: #92400e; color: #fde68a; }
+.stats-balance .balance-title { font-weight: 700; margin-bottom: 4px; display: block; }
+.stats-footer { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 0.72rem; color: var(--text-muted); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.stats-empty { color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px 0; }
+.copy-btn { background: #2a2a2a; border: 1px solid #444; color: #fff; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-top: 10px; font-weight: 600; }
+.copy-btn:active { background: #333; }
+.copy-btn.generate { background: var(--accent-green); border-color: var(--accent-green); color: #000; }
+.copy-btn.generate:active { background: #0e9c6e; }
+
+.vk-link { display: inline-block; margin-top: 6px; color: #0077FF; text-decoration: none; font-weight: 600; font-size: 0.78rem; word-break: break-all; }
+.vk-link:hover { text-decoration: underline; }
+
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--card-bg); width: 100%; max-width: 450px; border-radius: 16px; padding: 20px; border: 1px solid #444; max-height: 90vh; overflow-y: auto; }
+.modal h2 { font-size: 1.2rem; margin-bottom: 5px; }
+.modal .date-label { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; }
+.modal-group { margin-bottom: 15px; }
+.modal-group h4 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+.checkbox-list { display: flex; flex-direction: column; gap: 6px; }
+.checkbox-item { display: flex; align-items: center; gap: 10px; background: #2a2a2a; padding: 8px 12px; border-radius: 8px; cursor: pointer; border: 1px solid #444; transition: opacity 0.15s, background 0.15s; }
+.checkbox-item.disabled { opacity: 0.35; cursor: not-allowed; background: #1a1a1a; }
+.checkbox-item.disabled input { cursor: not-allowed; }
+.checkbox-item input { width: 18px; height: 18px; accent-color: var(--accent-blue); }
+.modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+.modal-buttons button { flex: 1; padding: 12px; }
+.modal-buttons .cancel { background: #444; }
+.modal-buttons .save { background: var(--accent-green); color: #000; }
+
+.setup-screen { background: var(--card-bg); border-radius: 16px; padding: 25px 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 18px; }
+.setup-screen h2 { font-size: 1.3rem; font-weight: 700; color: #fff; text-align: center; margin-bottom: 5px; }
+.setup-screen .subtitle { font-size: 0.85rem; color: var(--text-muted); text-align: center; line-height: 1.4; margin-bottom: 5px; }
+.setup-screen .today-date { font-size: 1rem; color: var(--accent-blue); text-align: center; font-weight: 600; padding: 8px; background: #1e293b; border-radius: 8px; margin-bottom: 5px; }
+.setup-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+.setup-list { display: flex; flex-direction: column; gap: 8px; }
+.setup-worker-btn { background: #2a2a2a; border: 2px solid #444; color: #fff; padding: 14px 18px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s, border-color 0.15s; }
+.setup-worker-btn:hover { background: #333; }
+.setup-worker-btn.selected { background: #1e3a5f; border-color: var(--accent-blue); color: #fff; }
+.setup-worker-btn.selected::after { content: '✓'; color: var(--accent-blue); font-size: 1.2rem; font-weight: 700; }
+.setup-confirm { background: var(--accent-green); color: #000; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; border: none; margin-top: 8px; }
+.setup-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
+.setup-note { font-size: 0.75rem; color: var(--text-muted); text-align: center; line-height: 1.4; }
+
+.footer-info { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; padding-bottom: 20px; }
+</style>
+</head>
+<body>
+<div class="app-container">
+    <header>
+        <h1>График смен</h1>
+        <p id="subtitle">Бригада (Старт, Водоканал, Манипулятор)</p>
+    </header>
+
+    <div id="setupScreen" class="setup-screen hidden">
+        <h2>👋 Первый запуск</h2>
+        <p class="subtitle">Расставь людей один раз — программа сама просчитает все смены вперёд по циклу.</p>
+        <div class="today-date" id="setupTodayDate">Сегодня</div>
+        <div>
+            <div class="setup-label">Кто сегодня на Водоканале?</div>
+            <div class="setup-list" id="setupWorkerList"></div>
+        </div>
+        <button class="setup-confirm" id="setupConfirmBtn" disabled>✅ Готово, расставить всех</button>
+        <p class="setup-note">Остальных программа расставит на Старт и Манипулятор автоматически,<br>и продолжит цикл на все последующие рабочие дни.</p>
+    </div>
+
+    <div id="mainInterface" class="hidden">
+        <button class="settings-toggle" id="toggleSettings">⚙️ Настроить сотрудников</button>
+        <div class="settings-panel" id="settingsPanel">
+            <h3>Сотрудники</h3>
+            <div id="nameInputs"></div>
+            <button class="add-btn" id="addWorkerBtn">+ Добавить сотрудника</button>
+            <button id="saveNamesBtn" style="background: var(--accent-green); color: #000; margin-top: 5px;">💾 Сохранить изменения</button>
+            <button class="danger-btn" id="resetAllBtn">🗑️ Сбросить всё</button>
+        </div>
+
+        <div class="date-control">
+            <div class="date-row">
+                <input type="date" id="datePicker">
+                <button class="today-btn" id="todayBtn">Сегодня</button>
+            </div>
+            <div style="font-size: 0.9rem; color: #aaa; text-align: center;" id="dayOfWeekDisplay"></div>
+            <div class="action-row">
+                <button class="edit-btn" id="editDayBtn">✏️ Изменить</button>
+                <button class="dayoff-btn" id="dayoffBtn">🌙 Выходной</button>
+            </div>
+        </div>
+
+        <div id="dayoffBanner" class="dayoff-banner hidden">
+            <span class="emoji">🌙</span>
+            <span class="title">ВЫХОДНОЙ</span>
+            <span class="sub">Цикл смен стоит на месте. Следующий рабочий день = +1 строка.</span>
+        </div>
+
+        <div id="postsBlock">
+            <div class="post-card start">
+                <div class="post-header"><span class="post-title">🟢 Пост А — Старт</span><span class="post-count" id="postACount">0 чел.</span></div>
+                <div class="workers-list" id="postA"></div>
+            </div>
+            <div class="post-card vodokanal" style="margin-top: 10px;">
+                <div class="post-header"><span class="post-title">🔵 Пост Б — Водоканал</span><span class="post-count" id="postBCount">0 чел.</span></div>
+                <div class="workers-list" id="postB"></div>
+            </div>
+            <div class="post-card manipulator" style="margin-top: 10px;">
+                <div class="post-header"><span class="post-title">🟠 Пост В — Манипулятор</span><span class="post-count" id="postCCount">0 чел.</span></div>
+                <div class="workers-list" id="postC"></div>
+            </div>
+        </div>
+
+        <div class="calendar-section" style="margin-top: 15px;">
+            <div class="calendar-header">
+                <button class="calendar-nav-btn" id="prevMonthBtn">‹</button>
+                <div class="calendar-title" id="calendarTitle"></div>
+                <button class="calendar-nav-btn" id="nextMonthBtn">›</button>
+            </div>
+            <div class="weekdays">
+                <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <div class="stats-section" style="margin-top: 15px;">
+            <h3>📊 Статистика смен (только факты)</h3>
+            <div class="stats-period-tabs">
+                <div class="stats-tab active" data-period="month">Текущий месяц</div>
+                <div class="stats-tab" data-period="all">Всё время</div>
+            </div>
+            <div id="statsContainer"></div>
+        </div>
+
+        <div class="footer-info">
+            Данные сохраняются в вашем браузере.<br>
+            <a class="vk-link" href="https://vk.me/join/dZLTZB_LCCOhGGUjui9/4HgKiiHoMYn11JE=" target="_blank" rel="noopener">🔗 Открыть чат ВКонтакте</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h2>✏️ Редактирование дня</h2>
+        <div class="date-label" id="modalDateLabel"></div>
+
+        <div class="modal-group">
+            <h4>🟢 Пост А — Старт (выберите 2)</h4>
+            <div class="checkbox-list" id="modalPostA"></div>
+        </div>
+        <div class="modal-group">
+            <h4>🔵 Пост Б — Водоканал (выберите 1)</h4>
+            <div class="checkbox-list" id="modalPostB"></div>
+        </div>
+        <div class="modal-group">
+            <h4>🟠 Пост В — Манипулятор (выберите 2)</h4>
+            <div class="checkbox-list" id="modalPostC"></div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="cancel" id="modalCancelBtn">Отмена</button>
+            <button class="save" id="modalSaveBtn">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- КОНСТАНТЫ ---
+// 3 = Сеня, 5 = Тёма (поменяны местами)
+const DEFAULT_WORKERS = { '1': 'Сухроб', '2': 'Женя', '3': 'Сеня', '4': 'Макс', '5': 'Тёма' };
+const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+
+// ЦИКЛ — без залипаний.
+const CYCLE = [
+    [['1','2'], ['3'], ['4','5']],
+    [['3','4'], ['5'], ['1','2']],
+    [['5','1'], ['2'], ['3','4']],
+    [['2','3'], ['4'], ['5','1']],
+    [['4','5'], ['1'], ['2','3']],
+];
+
+// Карта: кто на Водоканале (id) → индекс строки
+const B_WORKER_TO_CYCLE = { '3': 0, '5': 1, '2': 2, '4': 3, '1': 4 };
+
+// Рабочие дни (основной график)
+const WORK_DAYS = {
+    '2026-09-02': '1', '2026-09-03': '1', '2026-09-04': '2',
+    '2026-09-07': '2', '2026-09-08': '2',
+    '2026-09-11': '1', '2026-09-12': '1',
+    '2026-09-14': '1', '2026-09-15': '1', '2026-09-16': '2', '2026-09-17': '2',
+    '2026-09-23': '1', '2026-09-24': '1', '2026-09-25': '2',
+    '2026-09-28': '2', '2026-09-29': '2',
+    '2026-10-02': '1', '2026-10-03': '1',
+    '2026-10-05': '1', '2026-10-06': '1',
+    '2026-10-07': '2', '2026-10-08': '2',
+    '2026-10-14': '1', '2026-10-15': '1', '2026-10-16': '2',
+    '2026-10-19': '2', '2026-10-20': '2',
+    '2026-10-23': '1', '2026-10-24': '1',
+    '2026-10-26': '1', '2026-10-27': '1', '2026-10-28': '2', '2026-10-29': '2',
+    '2026-11-05': '1', '2026-11-06': '2',
+    '2026-11-09': '2', '2026-11-10': '2',
+    '2026-11-13': '1', '2026-11-14': '1',
+    '2026-11-16': '1', '2026-11-17': '1', '2026-11-18': '2', '2026-11-19': '2',
+    '2026-11-25': '1', '2026-11-26': '1', '2026-11-27': '2',
+    '2026-11-30': '2',
+    '2026-12-01': '2',
+    '2026-12-04': '1', '2026-12-05': '1',
+    '2026-12-07': '1', '2026-12-08': '1', '2026-12-09': '2', '2026-12-10': '2',
+    '2026-12-16': '1', '2026-12-17': '1', '2026-12-18': '2',
+    '2026-12-21': '2', '2026-12-22': '2',
+    '2026-12-25': '1', '2026-12-26': '1',
+    '2026-12-28': '1', '2026-12-29': '1'
+};
+
+// --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
+let WORKERS = {};
+let nextWorkerId = 1;
+let ACTUAL_SCHEDULE = {};
+let DAYOFFS = {};
+let currentCalendarDate = new Date();
+let selectedDate = new Date();
+let currentStatsPeriod = 'month';
+let WORKER_COLORS = {};
+let setupSelectedWorker = null;
+
+// --- ЦВЕТА ---
+function generateColor(index) {
+    const hue = (index * 137.508) % 360;
+    const sat = 65 + (index % 3) * 10;
+    const light = 55 + (index % 2) * 8;
+    return `hsl(${hue.toFixed(0)}, ${sat}%, ${light}%)`;
+}
+function rebuildWorkerColors() {
+    WORKER_COLORS = {};
+    const ids = Object.keys(WORKERS).sort((a, b) => parseInt(a) - parseInt(b));
+    ids.forEach((id, i) => { WORKER_COLORS[id] = generateColor(i); });
+}
+
+// --- УТИЛИТЫ ---
+function safeParse(json, fallback) {
+    if (!json) return fallback;
+    try { const p = JSON.parse(json); return p ?? fallback; }
+    catch (e) { return fallback; }
+}
+function parseLocalDate(str) {
+    if (!str || typeof str !== 'string') return null;
+    const parts = str.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return null;
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    if (isNaN(d.getTime())) return null;
+    if (d.getFullYear() !== parts[0] || d.getMonth() !== parts[1] - 1 || d.getDate() !== parts[2]) return null;
+    return d;
+}
+function getLocalDateStr(date) {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function formatDate(date) {
+    const days = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+function formatShortDate(date) {
+    const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    return `${days[date.getDay()]} ${d}.${m}`;
+}
+function computeNextWorkerId() {
+    const ids = Object.keys(WORKERS).map(k => parseInt(k)).filter(n => !isNaN(n));
+    nextWorkerId = (ids.length ? Math.max(...ids) : 0) + 1;
+}
+
+// ============================================================
+// ЛОГИКА ЦИКЛА
+// ============================================================
+function getCycleIndexForDate(date) {
+    const ds = getLocalDateStr(date);
+    if (ACTUAL_SCHEDULE[ds] && typeof ACTUAL_SCHEDULE[ds].cycleIndex === 'number') {
+        return ACTUAL_SCHEDULE[ds].cycleIndex;
+    }
+    const keys = Object.keys(ACTUAL_SCHEDULE).filter(k => k < ds).sort();
+    if (keys.length > 0) {
+        const lastKey = keys[keys.length - 1];
+        const lastIdx = ACTUAL_SCHEDULE[lastKey].cycleIndex;
+        if (typeof lastIdx === 'number') {
+            return (lastIdx + 1) % 5;
+        }
+    }
+    return 0;
+}
+
+function getShiftForDate(date) {
+    const ds = getLocalDateStr(date);
+    if (ACTUAL_SCHEDULE[ds]) {
+        return {
+            A: [...ACTUAL_SCHEDULE[ds].A],
+            B: [...ACTUAL_SCHEDULE[ds].B],
+            C: [...ACTUAL_SCHEDULE[ds].C],
+            cycleIndex: ACTUAL_SCHEDULE[ds].cycleIndex,
+            isDayOff: false
+        };
+    }
+    if (DAYOFFS[ds]) {
+        return { isDayOff: true, A: [], B: [], C: [], cycleIndex: null };
+    }
+    const idx = getCycleIndexForDate(date);
+    const c = CYCLE[idx];
+    return { A: [...c[0]], B: [...c[1]], C: [...c[2]], cycleIndex: idx, isDayOff: false };
+}
+
+function isDayOff(date) {
+    return !!DAYOFFS[getLocalDateStr(date)];
+}
+
+// ============================================================
+// СОХРАНЕНИЕ
+// ============================================================
+function loadData() {
+    const savedWorkers = localStorage.getItem('brigade_workers');
+    const savedActual = localStorage.getItem('brigade_actual_schedule');
+    const savedDayoffs = localStorage.getItem('brigade_dayoffs');
+
+    WORKERS = safeParse(savedWorkers, null);
+    if (!WORKERS || typeof WORKERS !== 'object' || Array.isArray(WORKERS) || Object.keys(WORKERS).length === 0) {
+        WORKERS = JSON.parse(JSON.stringify(DEFAULT_WORKERS));
+    }
+    ACTUAL_SCHEDULE = safeParse(savedActual, {});
+    if (typeof ACTUAL_SCHEDULE !== 'object' || Array.isArray(ACTUAL_SCHEDULE)) ACTUAL_SCHEDULE = {};
+    DAYOFFS = safeParse(savedDayoffs, {});
+    if (typeof DAYOFFS !== 'object' || Array.isArray(DAYOFFS)) DAYOFFS = {};
+
+    computeNextWorkerId();
+    rebuildWorkerColors();
+}
+
+function saveData() {
+    try {
+        localStorage.setItem('brigade_workers', JSON.stringify(WORKERS));
+        localStorage.setItem('brigade_actual_schedule', JSON.stringify(ACTUAL_SCHEDULE));
+        localStorage.setItem('brigade_dayoffs', JSON.stringify(DAYOFFS));
+    } catch (e) {
+        alert('Не удалось сохранить данные.');
+    }
+}
+
+function hasAnySchedule() {
+    return Object.keys(ACTUAL_SCHEDULE).length > 0;
+}
+
+// ============================================================
+// ПЕРВЫЙ ЗАПУСК — РАССТАНОВКА
+// ============================================================
+function showSetupScreen() {
+    document.getElementById('setupScreen').classList.remove('hidden');
+    document.getElementById('mainInterface').classList.add('hidden');
+
+    const today = new Date();
+    document.getElementById('setupTodayDate').textContent = formatDate(today);
+
+    const list = document.getElementById('setupWorkerList');
+    list.innerHTML = '';
+    setupSelectedWorker = null;
+    document.getElementById('setupConfirmBtn').disabled = true;
+
+    const ids = Object.keys(WORKERS).sort((a, b) => parseInt(a) - parseInt(b));
+    ids.forEach(id => {
+        const btn = document.createElement('button');
+        btn.className = 'setup-worker-btn';
+        btn.textContent = WORKERS[id];
+        btn.dataset.id = id;
+        btn.addEventListener('click', () => {
+            list.querySelectorAll('.setup-worker-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            setupSelectedWorker = id;
+            document.getElementById('setupConfirmBtn').disabled = false;
+        });
+        list.appendChild(btn);
+    });
+}
+
+function applySetup() {
+    if (!setupSelectedWorker) return;
+
+    const today = new Date();
+    const todayStr = getLocalDateStr(today);
+
+    const cycleIdx = B_WORKER_TO_CYCLE[setupSelectedWorker];
+    if (cycleIdx === undefined) {
+        alert('Ошибка: этот сотрудник не встречается на Водоканале.');
+        return;
+    }
+
+    const c = CYCLE[cycleIdx];
+    ACTUAL_SCHEDULE[todayStr] = {
+        A: [...c[0]],
+        B: [...c[1]],
+        C: [...c[2]],
+        cycleIndex: cycleIdx
+    };
+
+    const startStr = todayStr;
+    const workDayKeys = Object.keys(WORK_DAYS).filter(k => k > startStr).sort();
+
+    let idx = cycleIdx;
+    workDayKeys.forEach(ds => {
+        idx = (idx + 1) % 5;
+        const cc = CYCLE[idx];
+        ACTUAL_SCHEDULE[ds] = {
+            A: [...cc[0]],
+            B: [...cc[1]],
+            C: [...cc[2]],
+            cycleIndex: idx
+        };
+    });
+
+    const allKeys = Object.keys(WORK_DAYS).filter(k => k >= startStr).sort();
+    if (allKeys.length > 0) {
+        const firstDate = parseLocalDate(allKeys[0]);
+        const lastDate = parseLocalDate(allKeys[allKeys.length - 1]);
+        for (let d = new Date(firstDate); d <= lastDate; d.setDate(d.getDate() + 1)) {
+            const ds = getLocalDateStr(d);
+            if (!ACTUAL_SCHEDULE[ds] && !DAYOFFS[ds]) {
+                DAYOFFS[ds] = true;
+            }
+        }
+    }
+
+    Object.keys(ACTUAL_SCHEDULE).forEach(k => { if (k < todayStr) delete ACTUAL_SCHEDULE[k]; });
+    Object.keys(DAYOFFS).forEach(k => { if (k < todayStr) delete DAYOFFS[k]; });
+
+    saveData();
+    document.getElementById('setupScreen').classList.add('hidden');
+    document.getElementById('mainInterface').classList.remove('hidden');
+
+    document.getElementById('subtitle').textContent = `Бригада из ${Object.keys(WORKERS).length} человек`;
+    document.getElementById('datePicker').value = todayStr;
+    currentCalendarDate = new Date(today);
+    updateUI(today);
+}
+
+// --- ОТРИСОВКА ---
+function updateUI(date) {
+    selectedDate = new Date(date);
+    const shift = getShiftForDate(date);
+    document.getElementById('dayOfWeekDisplay').textContent = formatDate(date);
+
+    const dayoffBanner = document.getElementById('dayoffBanner');
+    const postsBlock = document.getElementById('postsBlock');
+    const dayoffBtn = document.getElementById('dayoffBtn');
+
+    if (shift.isDayOff) {
+        dayoffBanner.classList.remove('hidden');
+        postsBlock.classList.add('hidden');
+        dayoffBtn.classList.add('active');
+        dayoffBtn.textContent = '↩️ Отменить выходной';
+    } else {
+        dayoffBanner.classList.add('hidden');
+        postsBlock.classList.remove('hidden');
+        dayoffBtn.classList.remove('active');
+        dayoffBtn.textContent = '🌙 Выходной';
+
+        const renderWorkers = (elementId, workerIds) => {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            workerIds.forEach(id => {
+                const span = document.createElement('span');
+                span.className = 'worker-badge';
+                span.textContent = WORKERS[id] || `Свободно`;
+                container.appendChild(span);
+            });
+        };
+        renderWorkers('postA', shift.A);
+        renderWorkers('postB', shift.B);
+        renderWorkers('postC', shift.C);
+
+        document.getElementById('postACount').textContent = `${shift.A.length} чел.`;
+        document.getElementById('postBCount').textContent = `${shift.B.length} чел.`;
+        document.getElementById('postCCount').textContent = `${shift.C.length} чел.`;
+    }
+
+    if (currentCalendarDate.getMonth() !== date.getMonth() || currentCalendarDate.getFullYear() !== date.getFullYear()) {
+        currentCalendarDate = new Date(date);
+    }
+    renderCalendar(date);
+    renderStats();
+}
+
+function renderCalendar(selDate = null) {
+    const year = currentCalendarDate.getFullYear();
+    const month = currentCalendarDate.getMonth();
+    document.getElementById('calendarTitle').textContent = `${monthNames[month]} ${year}`;
+
+    const grid = document.getElementById('calendarGrid');
+    grid.innerHTML = '';
+
+    const firstDay = new Date(year, month, 1);
+    let startDayOfWeek = firstDay.getDay() - 1;
+    if (startDayOfWeek < 0) startDayOfWeek = 6;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < startDayOfWeek; i++) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'calendar-day empty';
+        grid.appendChild(emptyDiv);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const ds = getLocalDateStr(date);
+        const hasData = !!ACTUAL_SCHEDULE[ds];
+        const hasDayoff = !!DAYOFFS[ds];
+        const shift = hasData ? ACTUAL_SCHEDULE[ds] : null;
+        const vodokanalWorkerId = (shift && shift.B && shift.B[0]) ? shift.B[0] : null;
+        const vodokanalName = hasData ? (WORKERS[vodokanalWorkerId] || '—') : '';
+
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day';
+
+        const today = new Date();
+        if (date.toDateString() === today.toDateString()) dayDiv.classList.add('today');
+        if (selDate && date.toDateString() === selDate.toDateString()) dayDiv.classList.add('selected');
+
+        if (hasDayoff) {
+            dayDiv.classList.add('dayoff');
+            dayDiv.innerHTML = `<span class="day-number">${day}</span><span class="dayoff-mark">🌙</span>`;
+        } else if (hasData) {
+            const dotColor = WORKER_COLORS[vodokanalWorkerId] || '#888';
+            dayDiv.innerHTML = `
+                <span class="day-number">${day}</span>
+                <span class="vodokanal-name">${vodokanalName}</span>
+                <span class="vodokanal-dot" style="background: ${dotColor}"></span>
+            `;
+        } else {
+            dayDiv.classList.add('no-data');
+            dayDiv.innerHTML = `<span class="day-number">${day}</span>`;
+        }
+
+        dayDiv.addEventListener('click', () => {
+            document.getElementById('datePicker').value = getLocalDateStr(date);
+            updateUI(date);
+        });
+
+        grid.appendChild(dayDiv);
+    }
+}
+
+// --- СТАТИСТИКА ---
+function getStatsData(period) {
+    const result = {};
+    const ids = Object.keys(WORKERS);
+    ids.forEach(id => result[id] = { total: 0, A: 0, B: 0, C: 0 });
+
+    let daysConsidered = 0;
+    let totalShiftsA = 0, totalShiftsB = 0, totalShiftsC = 0;
+
+    const addShift = (shift) => {
+        if (!shift) return;
+        let counted = false;
+        ['A','B','C'].forEach(post => {
+            (shift[post] || []).forEach(id => {
+                if (result[id]) {
+                    result[id].total++;
+                    result[id][post]++;
+                    counted = true;
+                    if (post === 'A') totalShiftsA++;
+                    if (post === 'B') totalShiftsB++;
+                    if (post === 'C') totalShiftsC++;
+                }
+            });
+        });
+        if (counted) daysConsidered++;
+    };
+
+    if (period === 'month') {
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        for (let day = 1; day <= daysInMonth; day++) {
+            const ds = getLocalDateStr(new Date(year, month, day));
+            if (ACTUAL_SCHEDULE[ds]) addShift(ACTUAL_SCHEDULE[ds]);
+        }
+    } else {
+        Object.keys(ACTUAL_SCHEDULE).forEach(ds => {
+            if (parseLocalDate(ds)) addShift(ACTUAL_SCHEDULE[ds]);
+        });
+    }
+
+    const activeIds = ids.filter(id => result[id].total > 0);
+    const totals = activeIds.map(id => result[id].total);
+    const totalShifts = totals.reduce((a, b) => a + b, 0);
+    const avg = activeIds.length ? totalShifts / activeIds.length : 0;
+    const min = totals.length ? Math.min(...totals) : 0;
+    const max = totals.length ? Math.max(...totals) : 0;
+    const spread = max - min;
+
+    return { result, daysConsidered, ids, activeIds, totalShifts, totalShiftsA, totalShiftsB, totalShiftsC, avg, min, max, spread };
+}
+
+function renderStats() {
+    const container = document.getElementById('statsContainer');
+    if (!container) return;
+
+    const data = getStatsData(currentStatsPeriod);
+    const { result, daysConsidered, activeIds, totalShifts, totalShiftsA, totalShiftsB, totalShiftsC, spread } = data;
+
+    if (activeIds.length === 0) {
+        container.innerHTML = '<div class="stats-empty">Нет данных за выбранный период</div>';
+        return;
+    }
+
+    let periodLabel, totalDaysInPeriod;
+    if (currentStatsPeriod === 'month') {
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+        periodLabel = `${monthNames[month]} ${year}`;
+        totalDaysInPeriod = new Date(year, month + 1, 0).getDate();
+    } else {
+        periodLabel = 'Всё время';
+        totalDaysInPeriod = daysConsidered;
+    }
+
+    const fillPercent = totalDaysInPeriod > 0 ? Math.round((daysConsidered / totalDaysInPeriod) * 100) : 0;
+
+    let balanceClass = 'good';
+    let balanceTitle = '⚖️ Загрузка сбалансирована';
+    if (spread > 1 && spread <= 3) { balanceClass = 'warn'; balanceTitle = '⚠️ Небольшой перекос'; }
+    else if (spread > 3) { balanceClass = 'warn'; balanceTitle = '⚠️ Заметный перекос'; }
+
+    const sortedIds = [...activeIds].sort((a, b) => result[b].total - result[a].total);
+    const maxTotal = Math.max(...sortedIds.map(id => result[id].total), 1);
+
+    let html = '';
+
+    html += `<div class="stats-legend">
+        <span><span class="legend-dot" style="background: var(--accent-green)"></span> 🟢 A — Старт</span>
+        <span><span class="legend-dot" style="background: var(--accent-blue)"></span> 🔵 Б — Водоканал</span>
+        <span><span class="legend-dot" style="background: var(--accent-orange)"></span> 🟠 В — Манипулятор</span>
+    </div>`;
+
+    html += `<div class="stats-summary">
+        <div class="stats-summary-card"><span class="label">Рабочих дней</span><span class="value">${daysConsidered}<span style="font-size:0.75rem;color:#888;">/${totalDaysInPeriod}</span></span><span class="sub">${fillPercent}%</span></div>
+        <div class="stats-summary-card ${balanceClass === 'good' ? 'good' : 'warn'}"><span class="label">Баланс</span><span class="value" style="font-size:0.95rem;">${spread <= 1 ? '⚖️ ОК' : (spread <= 3 ? '⚠️ Средн.' : '⚠️ Перекос')}</span><span class="sub">разброс ${spread}</span></div>
+    </div>`;
+
+    html += `<table class="stats-table"><thead><tr>
+        <th>Сотрудник</th><th class="num">A</th><th class="num">Б</th><th class="num">В</th><th class="num">Всего</th><th style="width:90px;">Загрузка</th>
+    </tr></thead><tbody>`;
+
+    sortedIds.forEach(id => {
+        const r = result[id];
+        const color = WORKER_COLORS[id] || '#888';
+        const barWidth = Math.round((r.total / maxTotal) * 100);
+        const segA = r.total ? Math.round((r.A / r.total) * 100) : 0;
+        const segB = r.total ? Math.round((r.B / r.total) * 100) : 0;
+        const segC = r.total ? Math.round((r.C / r.total) * 100) : 0;
+
+        html += `<tr>
+            <td><div class="stats-name-cell"><span class="stat-dot" style="background:${color}"></span><span>${WORKERS[id] || '—'}</span></div></td>
+            <td class="num">${r.A || '—'}</td>
+            <td class="num">${r.B || '—'}</td>
+            <td class="num">${r.C || '—'}</td>
+            <td class="num"><b>${r.total}</b></td>
+            <td class="stat-bar-cell"><div class="stat-bar" style="width:${barWidth}%;min-width:14px;">
+                ${segA ? `<div class="stat-bar-seg a" style="width:${segA}%"></div>` : ''}
+                ${segB ? `<div class="stat-bar-seg b" style="width:${segB}%"></div>` : ''}
+                ${segC ? `<div class="stat-bar-seg c" style="width:${segC}%"></div>` : ''}
+            </div></td>
+        </tr>`;
+    });
+
+    html += `<tr class="stats-total-row"><td><div class="stats-name-cell"><span>ИТОГО</span></div></td>
+        <td class="num">${totalShiftsA}</td><td class="num">${totalShiftsB}</td><td class="num">${totalShiftsC}</td><td class="num">${totalShifts}</td><td></td></tr>`;
+    html += `</tbody></table>`;
+
+    html += `<div class="stats-balance ${balanceClass}"><span class="balance-title">${balanceTitle}</span></div>`;
+    html += `<div class="stats-footer"><span>Период: ${periodLabel}</span><span>Сотрудников: ${activeIds.length}</span></div>`;
+    html += `<button class="copy-btn generate" id="generateBtn">📤 Сгенерировать на сегодня</button>`;
+    html += `<button class="copy-btn" id="copyStatsBtn">📋 Скопировать отчёт</button>`;
+
+    container.innerHTML = html;
+
+    const genBtn = document.getElementById('generateBtn');
+    if (genBtn) {
+        genBtn.addEventListener('click', () => {
+            const today = new Date();
+            if (isDayOff(today)) {
+                const old = genBtn.textContent;
+                genBtn.textContent = '🌙 Сегодня выходной';
+                setTimeout(() => { genBtn.textContent = old; }, 1500);
+                return;
+            }
+            const text = buildTodayText(today);
+            copyWithFeedback(genBtn, text, '✅ Скопировано!');
+        });
+    }
+
+    const copyBtn = document.getElementById('copyStatsBtn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            const text = buildStatsReport(periodLabel, daysConsidered, totalDaysInPeriod,
+                sortedIds, result, totalShifts, totalShiftsA, totalShiftsB, totalShiftsC, spread);
+            copyWithFeedback(copyBtn, text, '✅ Отчёт скопирован!');
+        });
+    }
+}
+
+function copyWithFeedback(btn, text, successLabel) {
+    const original = btn.textContent;
+    const done = () => {
+        btn.textContent = successLabel;
+        setTimeout(() => { btn.textContent = original; }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+        fallbackCopy(text, done);
+    }
+}
+
+function buildStatsReport(periodLabel, daysConsidered, totalDaysInPeriod,
+                          sortedIds, result, totalShifts,
+                          totalShiftsA, totalShiftsB, totalShiftsC, spread) {
+    const line = '━━━━━━━━━━━━━━━━━━━━━━';
+    const nameW = Math.max(8, ...sortedIds.map(id => (WORKERS[id] || '—').length));
+    const pad = (s, n) => { s = String(s); return s.length >= n ? s : s + ' '.repeat(n - s.length); };
+    const padL = (s, n) => { s = String(s); return s.length >= n ? s : ' '.repeat(n - s.length) + s; };
+
+    let text = '';
+    text += `📊 СТАТИСТИКА СМЕН\n${line}\n📅 Период: ${periodLabel}\n🗓 Рабочих дней: ${daysConsidered} из ${totalDaysInPeriod}\n${line}\n\n`;
+    text += `👥 ПО СОТРУДНИКАМ:\n\n`;
+    const header = `${pad('Сотрудник', nameW)}  🟢  🔵  🟠  Всего`;
+    text += header + '\n' + '─'.repeat(header.length) + '\n';
+    sortedIds.forEach(id => {
+        const r = result[id];
+        text += `${pad(WORKERS[id] || '—', nameW)}  ${padL(r.A, 1)}   ${padL(r.B, 1)}   ${padL(r.C, 1)}   ${padL(r.total, 3)}\n`;
+    });
+    text += '─'.repeat(header.length) + '\n';
+    text += `${pad('ИТОГО', nameW)}  ${padL(totalShiftsA, 1)}   ${padL(totalShiftsB, 1)}   ${padL(totalShiftsC, 1)}   ${padL(totalShifts, 3)}\n${line}\n\n`;
+    if (spread <= 1) text += `⚖️ Разброс: ${spread} — загрузка сбалансирована ✅`;
+    else if (spread <= 3) text += `⚠️ Разброс: ${spread} — небольшой перекос`;
+    else text += `⚠️ Разброс: ${spread} — заметный перекос`;
+    return text;
+}
+
+function buildTodayText(date) {
+    const shift = getShiftForDate(date);
+    if (shift.isDayOff) return `🌙 ${formatShortDate(date)} — выходной`;
+    const namesA = (shift.A || []).map(id => WORKERS[id] || '—').join(', ') || '—';
+    const namesB = (shift.B || []).map(id => WORKERS[id] || '—').join(', ') || '—';
+    const namesC = (shift.C || []).map(id => WORKERS[id] || '—').join(', ') || '—';
+    return `🔔 Смена ${formatShortDate(date)}\n\n🟢 Старт: ${namesA}\n🔵 Водоканал: ${namesB}\n🟠 Манипулятор: ${namesC}`;
+}
+
+function fallbackCopy(text, callback) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); callback(); }
+    catch (e) { alert('Не удалось скопировать. Текст:\n\n' + text); }
+    document.body.removeChild(ta);
+}
+
+// --- НАСТРОЙКА ИМЁН ---
+let tempWorkers = {};
+function renderNameInputs() {
+    const container = document.getElementById('nameInputs');
+    container.innerHTML = '';
+    const keys = Object.keys(tempWorkers).sort((a, b) => parseInt(a) - parseInt(b));
+    keys.forEach(id => {
+        const div = document.createElement('div');
+        div.className = 'input-group';
+        div.innerHTML = `<label>${id}</label><input type="text" data-id="${id}" value="${tempWorkers[id] || ''}" placeholder="Имя"><button class="remove-btn" data-id="${id}" title="Удалить">×</button>`;
+        container.appendChild(div);
+    });
+    container.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = e.target.getAttribute('data-id');
+            if (Object.keys(tempWorkers).length <= 3) { alert('Нельзя удалить: минимальное количество сотрудников — 3.'); return; }
+            if (confirm(`Удалить сотрудника "${tempWorkers[id]}"?`)) { delete tempWorkers[id]; renderNameInputs(); }
+        });
+    });
+}
+
+// --- МОДАЛЬНОЕ ОКНО ---
+const modalOverlay = document.getElementById('modalOverlay');
+const modalPostA = document.getElementById('modalPostA');
+const modalPostB = document.getElementById('modalPostB');
+const modalPostC = document.getElementById('modalPostC');
+let editingDate = null;
+
+function openEditModal() {
+    editingDate = new Date(selectedDate);
+    const shift = getShiftForDate(editingDate);
+    if (shift.isDayOff) { alert('Это выходной. Сначала отмените выходной кнопкой «↩️ Отменить выходной».'); return; }
+    document.getElementById('modalDateLabel').textContent = formatDate(editingDate);
+
+    const createCheckboxes = (container, selectedIds, maxLimit, groupName) => {
+        container.innerHTML = '';
+        const allIds = Object.keys(WORKERS).sort((a, b) => parseInt(a) - parseInt(b));
+        allIds.forEach(id => {
+            const isChecked = selectedIds.includes(id);
+            const label = document.createElement('label');
+            label.className = 'checkbox-item';
+            label.setAttribute('data-worker-id', id);
+            label.setAttribute('data-post', groupName);
+            label.innerHTML = `<input type="checkbox" name="${groupName}" value="${id}" ${isChecked ? 'checked' : ''}><span>${WORKERS[id]}</span>`;
+            container.appendChild(label);
+        });
+        container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = container.querySelectorAll('input:checked');
+                if (checked.length > maxLimit) cb.checked = false;
+                updateAllCheckboxStates();
+            });
+        });
+    };
+
+    createCheckboxes(modalPostA, shift.A || [], 2, 'modalA');
+    createCheckboxes(modalPostB, shift.B || [], 1, 'modalB');
+    createCheckboxes(modalPostC, shift.C || [], 2, 'modalC');
+    updateAllCheckboxStates();
+    modalOverlay.classList.add('open');
+}
+
+function updateAllCheckboxStates() {
+    const containers = [
+        { el: modalPostA, max: 2 },
+        { el: modalPostB, max: 1 },
+        { el: modalPostC, max: 2 }
+    ];
+    const selectedMap = {};
+    containers.forEach(({ el }) => {
+        el.querySelectorAll('input:checked').forEach(cb => { selectedMap[cb.value] = cb.name; });
+    });
+    containers.forEach(({ el, max }) => {
+        const currentChecked = el.querySelectorAll('input:checked').length;
+        const isFull = currentChecked >= max;
+        el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            const workerId = cb.value;
+            const label = cb.parentElement;
+            const isSelectedHere = cb.checked;
+            const isSelectedElsewhere = selectedMap[workerId] && selectedMap[workerId] !== cb.name;
+            if (isSelectedElsewhere) { cb.disabled = true; label.classList.add('disabled'); }
+            else if (!isSelectedHere && isFull) { cb.disabled = true; label.classList.add('disabled'); }
+            else { cb.disabled = false; label.classList.remove('disabled'); }
+        });
+    });
+}
+
+function closeEditModal() {
+    modalOverlay.classList.remove('open');
+    editingDate = null;
+}
+
+function saveEditedDay() {
+    if (!editingDate) return;
+    const getSelected = (container) => Array.from(container.querySelectorAll('input:checked')).map(cb => cb.value);
+    const newA = getSelected(modalPostA);
+    const newB = getSelected(modalPostB);
+    const newC = getSelected(modalPostC);
+
+    if (newA.length !== 2 || newB.length !== 1 || newC.length !== 2) {
+        alert('Ошибка: На Старте — 2, на Водоканале — 1, на Манипуляторе — 2.');
+        return;
+    }
+    const unique = new Set([...newA, ...newB, ...newC]);
+    if (unique.size !== 5) { alert('Ошибка: один и тот же сотрудник не может быть на двух постах.'); return; }
+
+    const ds = getLocalDateStr(editingDate);
+    let cycleIndex;
+    if (ACTUAL_SCHEDULE[ds] && typeof ACTUAL_SCHEDULE[ds].cycleIndex === 'number') {
+        cycleIndex = ACTUAL_SCHEDULE[ds].cycleIndex;
+    } else {
+        cycleIndex = getCycleIndexForDate(editingDate);
+    }
+    ACTUAL_SCHEDULE[ds] = { A: newA, B: newB, C: newC, cycleIndex };
+    delete DAYOFFS[ds];
+    saveData();
+    const dateToUpdate = new Date(editingDate);
+    closeEditModal();
+    updateUI(dateToUpdate);
+}
+
+function toggleDayOff() {
+    const ds = getLocalDateStr(selectedDate);
+    if (DAYOFFS[ds]) {
+        delete DAYOFFS[ds];
+    } else {
+        DAYOFFS[ds] = true;
+        delete ACTUAL_SCHEDULE[ds];
+    }
+    saveData();
+    updateUI(selectedDate);
+}
+
+// --- ИНИЦИАЛИЗАЦИЯ ---
+loadData();
+
+if (hasAnySchedule()) {
+    document.getElementById('mainInterface').classList.remove('hidden');
+    const today = new Date();
+    document.getElementById('datePicker').value = getLocalDateStr(today);
+    currentCalendarDate = new Date(today);
+    document.getElementById('subtitle').textContent = `Бригада из ${Object.keys(WORKERS).length} человек`;
+    updateUI(today);
+} else {
+    showSetupScreen();
+}
+
+// --- ОБРАБОТЧИКИ ---
+document.getElementById('setupConfirmBtn').addEventListener('click', applySetup);
+
+document.getElementById('datePicker').addEventListener('change', (e) => {
+    const parsed = parseLocalDate(e.target.value);
+    if (parsed) updateUI(parsed);
+});
+document.getElementById('todayBtn').addEventListener('click', () => {
+    const now = new Date();
+    document.getElementById('datePicker').value = getLocalDateStr(now);
+    currentCalendarDate = new Date(now);
+    updateUI(now);
+});
+document.getElementById('prevMonthBtn').addEventListener('click', () => {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+    renderCalendar(selectedDate); renderStats();
+});
+document.getElementById('nextMonthBtn').addEventListener('click', () => {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+    renderCalendar(selectedDate); renderStats();
+});
+document.getElementById('toggleSettings').addEventListener('click', () => {
+    const panel = document.getElementById('settingsPanel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+        tempWorkers = JSON.parse(JSON.stringify(WORKERS));
+        renderNameInputs();
+    }
+});
+document.getElementById('addWorkerBtn').addEventListener('click', () => {
+    while (tempWorkers[String(nextWorkerId)]) nextWorkerId++;
+    const newId = String(nextWorkerId);
+    nextWorkerId++;
+    tempWorkers[newId] = `Сотрудник ${newId}`;
+    renderNameInputs();
+});
+document.getElementById('saveNamesBtn').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('#nameInputs input[type="text"]');
+    const newWorkers = {};
+    inputs.forEach(input => {
+        const id = input.getAttribute('data-id');
+        const val = input.value.trim();
+        newWorkers[id] = val || `Сотрудник ${id}`;
+    });
+    if (Object.keys(newWorkers).length < 3) { alert('Слишком мало сотрудников. Нужно хотя бы 3.'); return; }
+    WORKERS = newWorkers;
+    computeNextWorkerId();
+    rebuildWorkerColors();
+    saveData();
+    updateUI(selectedDate);
+    document.getElementById('subtitle').textContent = `Бригада из ${Object.keys(WORKERS).length} человек`;
+    document.getElementById('settingsPanel').classList.remove('open');
+    alert('Изменения сохранены!');
+});
+document.getElementById('resetAllBtn').addEventListener('click', () => {
+    if (confirm('Сбросить ВСЕ данные? Программа запустится заново.')) {
+        localStorage.removeItem('brigade_workers');
+        localStorage.removeItem('brigade_actual_schedule');
+        localStorage.removeItem('brigade_dayoffs');
+        location.reload();
+    }
+});
+document.getElementById('editDayBtn').addEventListener('click', openEditModal);
+document.getElementById('dayoffBtn').addEventListener('click', toggleDayOff);
+document.getElementById('modalCancelBtn').addEventListener('click', closeEditModal);
+document.getElementById('modalSaveBtn').addEventListener('click', saveEditedDay);
+modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeEditModal(); });
+document.querySelectorAll('.stats-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentStatsPeriod = tab.getAttribute('data-period');
+        renderStats();
+    });
+});
+</script>
+</body>
+</html>
