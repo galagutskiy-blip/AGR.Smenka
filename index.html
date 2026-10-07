@@ -148,6 +148,8 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 .calendar-day.dayoff { background: #1a1530; color: #7a6da8; }
 .calendar-day.today { border-color: var(--today-border); background: #2a2a1a; }
 .calendar-day.selected { border-color: var(--accent-blue); background: #1e293b; }
+.calendar-day.manual { background: #2a1f0a; border-color: var(--accent-orange); }
+.calendar-day.manual .day-number { color: #fde68a; }
 .calendar-day .day-number { font-weight: 600; line-height: 1; margin-bottom: 2px; }
 .calendar-day .vodokanal-name { font-size: 0.55rem; color: #bfdbfe; line-height: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .calendar-day .vodokanal-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); margin-top: 2px; }
@@ -385,17 +387,10 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 .modal-buttons button { flex: 1; padding: 12px; }
 .modal-buttons .cancel { background: #444; }
 .modal-buttons .save { background: var(--accent-green); color: #000; }
+.modal-buttons .reset-manual { background: #4a3a7a; color: #e0d4ff; border: 1px solid #6d5aa8; }
 
 .footer-info { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; padding-bottom: 20px; }
 </style>
-    <meta name="theme-color" content="#121212">
-    <meta name="application-name" content="График смен">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="График смен">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="manifest" href="./manifest.webmanifest">
-    <link rel="apple-touch-icon" href="./icons/icon-192.png">
 </head>
 <body>
 <div class="app-container">
@@ -428,7 +423,7 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
     <div id="dayoffBanner" class="dayoff-banner hidden">
         <span class="emoji">🌙</span>
         <span class="title">ВЫХОДНОЙ</span>
-        <span class="sub">Цикл смен стоит на месте. Следующий рабочий день = +1 строка.</span>
+        <span class="sub">Цикл смен сдвинут. Следующий рабочий день = новая строка цикла.</span>
     </div>
 
     <div id="postsBlock">
@@ -493,6 +488,7 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 
         <div class="modal-buttons">
             <button class="cancel" id="modalCancelBtn">Отмена</button>
+            <button class="reset-manual" id="modalResetBtn">↺ К циклу</button>
             <button class="save" id="modalSaveBtn">Сохранить</button>
         </div>
     </div>
@@ -503,31 +499,24 @@ button.dayoff-btn.active { background: #2d4a2d; color: #a7f3d0; border-color: #1
 const DEFAULT_WORKERS = { '1': 'Сухроб', '2': 'Женя', '3': 'Тёма', '4': 'Макс', '5': 'Сеня' };
 const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
-// ЦИКЛ — ровно как в таблице (5 строк).
-// Пост Б (Водоканал) по строкам: 3, 5, 2, 4, 1
 const CYCLE = [
-    [['1','2'], ['3'], ['4','5']],   // строка 1 (индекс 0)
-    [['3','4'], ['5'], ['1','2']],   // строка 2 (индекс 1)  ← старт 05.10.2026: Сеня
-    [['5','1'], ['2'], ['3','4']],   // строка 3 (индекс 2)  ← 06.10: Женя
-    [['2','3'], ['4'], ['5','1']],   // строка 4 (индекс 3)  ← 07.10: Макс
-    [['4','5'], ['1'], ['2','3']],   // строка 5 (индекс 4)
+    [['1','2'], ['3'], ['4','5']],
+    [['3','4'], ['5'], ['1','2']],
+    [['5','1'], ['2'], ['3','4']],
+    [['2','3'], ['4'], ['5','1']],
+    [['4','5'], ['1'], ['2','3']],
 ];
 
-// Стартовая дата: 05.10.2026 — 2-я строка цикла (индекс 1), Водоканал = Сеня (5)
 const START_DATE = new Date(2026, 9, 5);
 const START_CYCLE_INDEX = 1;
 
-// Рабочие дни (основной график, 1/2 смена) из "Подработка Деталь".
-// Подработки (extras) и мероприятия (events) сюда НЕ входят.
 const WORK_DAYS = {
-    // Сентябрь 2026
     '2026-09-02': '1', '2026-09-03': '1', '2026-09-04': '2',
     '2026-09-07': '2', '2026-09-08': '2',
     '2026-09-11': '1', '2026-09-12': '1',
     '2026-09-14': '1', '2026-09-15': '1', '2026-09-16': '2', '2026-09-17': '2',
     '2026-09-23': '1', '2026-09-24': '1', '2026-09-25': '2',
     '2026-09-28': '2', '2026-09-29': '2',
-    // Октябрь 2026
     '2026-10-02': '1', '2026-10-03': '1',
     '2026-10-05': '1', '2026-10-06': '1',
     '2026-10-07': '2', '2026-10-08': '2',
@@ -535,14 +524,12 @@ const WORK_DAYS = {
     '2026-10-19': '2', '2026-10-20': '2',
     '2026-10-23': '1', '2026-10-24': '1',
     '2026-10-26': '1', '2026-10-27': '1', '2026-10-28': '2', '2026-10-29': '2',
-    // Ноябрь 2026
     '2026-11-05': '1', '2026-11-06': '2',
     '2026-11-09': '2', '2026-11-10': '2',
     '2026-11-13': '1', '2026-11-14': '1',
     '2026-11-16': '1', '2026-11-17': '1', '2026-11-18': '2', '2026-11-19': '2',
     '2026-11-25': '1', '2026-11-26': '1', '2026-11-27': '2',
     '2026-11-30': '2',
-    // Декабрь 2026
     '2026-12-01': '2',
     '2026-12-04': '1', '2026-12-05': '1',
     '2026-12-07': '1', '2026-12-08': '1', '2026-12-09': '2', '2026-12-10': '2',
@@ -646,12 +633,13 @@ function getShiftForDate(date) {
             B: [...ACTUAL_SCHEDULE[ds].B],
             C: [...ACTUAL_SCHEDULE[ds].C],
             cycleIndex: ACTUAL_SCHEDULE[ds].cycleIndex,
+            manual: !!ACTUAL_SCHEDULE[ds].manual,
             isDayOff: false
         };
     }
 
     if (DAYOFFS[ds]) {
-        return { isDayOff: true, A: [], B: [], C: [], cycleIndex: null };
+        return { isDayOff: true, A: [], B: [], C: [], cycleIndex: null, manual: false };
     }
 
     const idx = getCycleIndexForDate(date);
@@ -661,6 +649,7 @@ function getShiftForDate(date) {
         B: [...c[1]],
         C: [...c[2]],
         cycleIndex: idx,
+        manual: false,
         isDayOff: false
     };
 }
@@ -701,7 +690,7 @@ function saveData() {
 }
 
 // ============================================================
-// ПРИНУДИТЕЛЬНОЕ АВТОЗАПОЛНЕНИЕ ПО ЦИКЛУ
+// АВТОЗАПОЛНЕНИЕ ПО ЦИКЛУ
 // ============================================================
 function forceFillSchedule() {
     const startStr = getLocalDateStr(START_DATE);
@@ -740,6 +729,44 @@ function forceFillSchedule() {
     }
 
     saveData();
+}
+
+// ============================================================
+// ПЕРЕСЧЁТ ГРАФИКА ПОСЛЕ ВЫХОДНОГО
+// ============================================================
+// Пересчитывает цикл для всех рабочих дней ПОСЛЕ указанной даты.
+// Ручные правки (manual:true) и выходные пропускаются, но цикл на них
+// не тратится — то есть они "выпадают" из последовательности.
+function rebuildScheduleFrom(fromDate) {
+    const fromStr = getLocalDateStr(fromDate);
+
+    const lastWorking = findLastWorkingDayBefore(fromDate);
+    let nextCycleIndex;
+
+    if (lastWorking && typeof lastWorking.data.cycleIndex === 'number') {
+        nextCycleIndex = (lastWorking.data.cycleIndex + 1) % 5;
+    } else {
+        const diffDays = Math.round((fromDate - START_DATE) / 86400000);
+        nextCycleIndex = ((START_CYCLE_INDEX + diffDays) % 5 + 5) % 5;
+    }
+
+    const futureKeys = Object.keys(WORK_DAYS)
+        .filter(k => k > fromStr)
+        .sort();
+
+    futureKeys.forEach(key => {
+        if (DAYOFFS[key]) return;
+        if (ACTUAL_SCHEDULE[key] && ACTUAL_SCHEDULE[key].manual) return;
+
+        const c = CYCLE[nextCycleIndex];
+        ACTUAL_SCHEDULE[key] = {
+            A: [...c[0]],
+            B: [...c[1]],
+            C: [...c[2]],
+            cycleIndex: nextCycleIndex
+        };
+        nextCycleIndex = (nextCycleIndex + 1) % 5;
+    });
 }
 
 // --- ОТРИСОВКА ---
@@ -837,6 +864,7 @@ function renderCalendar(selDate = null) {
                 <span class="vodokanal-name">${vodokanalName}</span>
                 <span class="vodokanal-dot" style="background: ${dotColor}"></span>
             `;
+            if (shift.manual) dayDiv.classList.add('manual');
         } else {
             dayDiv.classList.add('no-data');
             dayDiv.innerHTML = `<span class="day-number">${day}</span>`;
@@ -1244,8 +1272,24 @@ function saveEditedDay() {
         cycleIndex = getCycleIndexForDate(editingDate);
     }
 
-    ACTUAL_SCHEDULE[ds] = { A: newA, B: newB, C: newC, cycleIndex };
+    ACTUAL_SCHEDULE[ds] = { A: newA, B: newB, C: newC, cycleIndex, manual: true };
     delete DAYOFFS[ds];
+    saveData();
+    const dateToUpdate = new Date(editingDate);
+    closeEditModal();
+    updateUI(dateToUpdate);
+}
+
+// Возврат дня к автоматическому циклу
+function resetDayToCycle() {
+    if (!editingDate) return;
+    const ds = getLocalDateStr(editingDate);
+    if (!ACTUAL_SCHEDULE[ds]) { closeEditModal(); return; }
+
+    delete ACTUAL_SCHEDULE[ds];
+    // Пересобираем весь график начиная с этой даты —
+    // день встанет на своё место в цикле, а последующие сдвинутся корректно
+    rebuildScheduleFrom(new Date(editingDate.getTime() - 86400000));
     saveData();
     const dateToUpdate = new Date(editingDate);
     closeEditModal();
@@ -1255,12 +1299,15 @@ function saveEditedDay() {
 // --- ВЫХОДНОЙ ---
 function toggleDayOff() {
     const ds = getLocalDateStr(selectedDate);
+
     if (DAYOFFS[ds]) {
         delete DAYOFFS[ds];
     } else {
         DAYOFFS[ds] = true;
         delete ACTUAL_SCHEDULE[ds];
     }
+
+    rebuildScheduleFrom(selectedDate);
     saveData();
     updateUI(selectedDate);
 }
@@ -1353,6 +1400,7 @@ document.getElementById('editDayBtn').addEventListener('click', openEditModal);
 document.getElementById('dayoffBtn').addEventListener('click', toggleDayOff);
 document.getElementById('modalCancelBtn').addEventListener('click', closeEditModal);
 document.getElementById('modalSaveBtn').addEventListener('click', saveEditedDay);
+document.getElementById('modalResetBtn').addEventListener('click', resetDayToCycle);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeEditModal(); });
 
 document.querySelectorAll('.stats-tab').forEach(tab => {
@@ -1363,15 +1411,6 @@ document.querySelectorAll('.stats-tab').forEach(tab => {
         renderStats();
     });
 });
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => {
-            console.warn('PWA Service Worker registration failed:', err);
-        });
-    });
-}
 </script>
 </body>
 </html>
